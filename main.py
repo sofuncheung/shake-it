@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -12,7 +13,7 @@ import os
 import argparse
 
 from model import resnet
-from utils import progress_bar
+# from utils import progress_bar
 
 
 parser = argparse.ArgumentParser(description='PyTorch CIFAR10 Training')
@@ -31,7 +32,8 @@ transform_train = transforms.Compose([
     transforms.RandomCrop(32, padding=4),
     transforms.RandomHorizontalFlip(),
     transforms.ToTensor(),
-    transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+    # transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+    transforms.Normalize((0.4914, 0.4822, 0.4465), (0.247, 0.243, 0.261)),
 ])
 
 transform_test = transforms.Compose([
@@ -42,12 +44,12 @@ transform_test = transforms.Compose([
 trainset = torchvision.datasets.CIFAR10(
     root='./data', train=True, download=True, transform=transform_train)
 trainloader = torch.utils.data.DataLoader(
-    trainset, batch_size=128, shuffle=True, num_workers=2)
+    trainset, batch_size=128, shuffle=True, num_workers=1)
 
 testset = torchvision.datasets.CIFAR10(
     root='./data', train=False, download=True, transform=transform_test)
 testloader = torch.utils.data.DataLoader(
-    testset, batch_size=100, shuffle=False, num_workers=2)
+    testset, batch_size=100, shuffle=False, num_workers=1)
 
 classes = ('plane', 'car', 'bird', 'cat', 'deer',
            'dog', 'frog', 'horse', 'ship', 'truck')
@@ -108,9 +110,16 @@ def train(epoch):
         total += targets.size(0)
         correct += predicted.eq(targets).sum().item()
 
-        progress_bar(
-            batch_idx, len(trainloader), 'Loss: %.3f | Acc: %.3f%% (%d/%d)'
-            % (train_loss/(batch_idx+1), 100.*correct/total, correct, total))
+        # progress_bar(
+        #     batch_idx, len(trainloader), 'Loss: %.3f | Acc: %.3f%% (%d/%d)'
+        #     % (train_loss/(batch_idx+1), 100.*correct/total, correct, total))
+        # Above is when using terminal. Now I would like to run it on computing cores.
+        if (batch_idx+1) % 50 == 0:
+            print('Training On Batch %03d' % (batch_idx+1))
+    epoch_loss = train_loss/(batch_idx+1)
+    epoch_acc = correct/total
+    print('Loss: %.3f | Acc: %.3f%% (%d/%d)' % (epoch_loss, 100.*epoch_acc, correct, total))
+    return (epoch_loss, 100.*epoch_acc)
 
 
 def test(epoch):
@@ -130,10 +139,16 @@ def test(epoch):
             total += targets.size(0)
             correct += predicted.eq(targets).sum().item()
 
-            progress_bar(
-                batch_idx, len(testloader), 'Loss: %.3f | Acc: %.3f%% (%d/%d)'
-                % (test_loss/(batch_idx+1),
-                   100.*correct/total, correct, total))
+            # progress_bar(
+            #     batch_idx, len(testloader), 'Loss: %.3f | Acc: %.3f%% (%d/%d)'
+            #     % (test_loss/(batch_idx+1),
+            #        100.*correct/total, correct, total))
+            if (batch_idx+1) % 50 == 0:
+                print('Testing On Batch %03d' % (batch_idx+1))
+        epoch_loss = test_loss/(batch_idx+1)
+        epoch_acc = correct/total
+        print('Loss: %.3f | Acc: %.3f%% (%d/%d)' % (epoch_loss, 100.*epoch_acc, correct, total))
+        return (epoch_loss, 100.*epoch_acc)
 
     # Save checkpoint.
     acc = 100.*correct/total
@@ -149,7 +164,9 @@ def test(epoch):
         torch.save(state, './checkpoint/ckpt.pth')
         best_acc = acc
 
-
-for epoch in range(start_epoch, start_epoch+200):
-    train(epoch)
-    test(epoch)
+if __name__ == '__main__':
+    train_loss_acc_list = []
+    test_loss_acc_list = []
+    for epoch in range(start_epoch, start_epoch+200):
+        train_loss_acc_list.append(train(epoch))
+        test_loss_acc_list.append(test(epoch))
