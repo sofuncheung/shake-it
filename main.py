@@ -13,6 +13,7 @@ import os
 import argparse
 
 from model import resnet
+from config import config
 # from utils import progress_bar
 
 
@@ -42,14 +43,14 @@ transform_test = transforms.Compose([
 ])
 
 trainset = torchvision.datasets.CIFAR10(
-    root='./data', train=True, download=True, transform=transform_train)
+    root='~/shake-it/data', train=True, download=True, transform=transform_train)
 trainloader = torch.utils.data.DataLoader(
-    trainset, batch_size=128, shuffle=True, num_workers=1)
+    trainset, batch_size=128, shuffle=True, num_workers=2)
 
 testset = torchvision.datasets.CIFAR10(
-    root='./data', train=False, download=True, transform=transform_test)
+    root='~/shake-it/data', train=False, download=True, transform=transform_test)
 testloader = torch.utils.data.DataLoader(
-    testset, batch_size=100, shuffle=False, num_workers=1)
+    testset, batch_size=100, shuffle=False, num_workers=2)
 
 classes = ('plane', 'car', 'bird', 'cat', 'deer',
            'dog', 'frog', 'horse', 'ship', 'truck')
@@ -165,8 +166,13 @@ def test(epoch):
         best_acc = acc
 
 if __name__ == '__main__':
+    assert os.path.isdir(config.output_file_pth), "Target Output Directory Doesn't Exist!"
     train_loss_acc_list = []
     test_loss_acc_list = []
     for epoch in range(start_epoch, start_epoch+200):
         train_loss_acc_list.append(train(epoch))
         test_loss_acc_list.append(test(epoch))
+    np.save(os.path.join(
+        config.output_file_pth,'train_loss_acc_list.npy'), train_loss_acc_list)
+    np.save(os.path.join(
+        config.output_file_pth, 'test_loss_acc_list.npy'), test_loss_acc_list)
