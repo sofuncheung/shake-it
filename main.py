@@ -8,13 +8,14 @@ import torch.backends.cudnn as cudnn
 
 import torchvision
 import torchvision.transforms as transforms
+from torchsummary import summary
 
 import os
 import argparse
 
 from model import resnet
 from config import config
-# from utils import progress_bar
+#from utils import progress_bar
 
 
 parser = argparse.ArgumentParser(description='PyTorch CIFAR10 Training')
@@ -45,12 +46,12 @@ transform_test = transforms.Compose([
 trainset = torchvision.datasets.CIFAR10(
     root='~/shake-it/data', train=True, download=True, transform=transform_train)
 trainloader = torch.utils.data.DataLoader(
-    trainset, batch_size=128, shuffle=True, num_workers=2)
+    trainset, batch_size=128, shuffle=True, num_workers=16)
 
 testset = torchvision.datasets.CIFAR10(
     root='~/shake-it/data', train=False, download=True, transform=transform_test)
 testloader = torch.utils.data.DataLoader(
-    testset, batch_size=100, shuffle=False, num_workers=2)
+    testset, batch_size=100, shuffle=False, num_workers=16)
 
 classes = ('plane', 'car', 'bird', 'cat', 'deer',
            'dog', 'frog', 'horse', 'ship', 'truck')
@@ -75,6 +76,7 @@ net = net.to(device)
 if device == 'cuda':
     net = torch.nn.DataParallel(net)
     cudnn.benchmark = True
+summary(net, (3, 32, 32))
 
 if args.resume:
     # Load checkpoint.
@@ -111,9 +113,9 @@ def train(epoch):
         total += targets.size(0)
         correct += predicted.eq(targets).sum().item()
 
-        # progress_bar(
-        #     batch_idx, len(trainloader), 'Loss: %.3f | Acc: %.3f%% (%d/%d)'
-        #     % (train_loss/(batch_idx+1), 100.*correct/total, correct, total))
+        #progress_bar(
+        #    batch_idx, len(trainloader), 'Loss: %.3f | Acc: %.3f%% (%d/%d)'
+        #    % (train_loss/(batch_idx+1), 100.*correct/total, correct, total))
         # Above is when using terminal. Now I would like to run it on computing cores.
         if (batch_idx+1) % 50 == 0:
             print('Training On Batch %03d' % (batch_idx+1))
