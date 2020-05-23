@@ -1,0 +1,2604 @@
+==> Preparing data..
+Files already downloaded and verified
+Files already downloaded and verified
+==> Building model..
+
+Epoch: 0
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 1.941 | Acc: 30.250% (15125/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 1.614 | Acc: 39.230% (3923/10000)
+
+Epoch: 1
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 1.460 | Acc: 45.972% (22986/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 1.390 | Acc: 48.150% (4815/10000)
+
+Epoch: 2
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 1.200 | Acc: 56.766% (28383/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 1.174 | Acc: 58.050% (5805/10000)
+
+Epoch: 3
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.977 | Acc: 65.016% (32508/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 1.075 | Acc: 63.590% (6359/10000)
+
+Epoch: 4
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.825 | Acc: 70.984% (35492/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.897 | Acc: 68.520% (6852/10000)
+
+Epoch: 5
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.705 | Acc: 75.402% (37701/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.996 | Acc: 67.350% (6735/10000)
+
+Epoch: 6
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.621 | Acc: 78.364% (39182/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.805 | Acc: 73.080% (7308/10000)
+
+Epoch: 7
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.573 | Acc: 80.154% (40077/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.865 | Acc: 71.320% (7132/10000)
+
+Epoch: 8
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.532 | Acc: 81.612% (40806/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.632 | Acc: 78.730% (7873/10000)
+
+Epoch: 9
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.510 | Acc: 82.462% (41231/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.633 | Acc: 78.950% (7895/10000)
+
+Epoch: 10
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.490 | Acc: 83.220% (41610/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.876 | Acc: 72.840% (7284/10000)
+
+Epoch: 11
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.471 | Acc: 83.954% (41977/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.535 | Acc: 81.790% (8179/10000)
+
+Epoch: 12
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.450 | Acc: 84.650% (42325/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.591 | Acc: 79.930% (7993/10000)
+
+Epoch: 13
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.441 | Acc: 84.846% (42423/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.568 | Acc: 81.130% (8113/10000)
+
+Epoch: 14
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.427 | Acc: 85.262% (42631/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.584 | Acc: 80.300% (8030/10000)
+
+Epoch: 15
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.421 | Acc: 85.612% (42806/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.647 | Acc: 79.410% (7941/10000)
+
+Epoch: 16
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.413 | Acc: 85.940% (42970/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.490 | Acc: 83.710% (8371/10000)
+
+Epoch: 17
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.407 | Acc: 86.186% (43093/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.660 | Acc: 78.060% (7806/10000)
+
+Epoch: 18
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.399 | Acc: 86.276% (43138/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.515 | Acc: 82.610% (8261/10000)
+
+Epoch: 19
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.395 | Acc: 86.482% (43241/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.482 | Acc: 83.900% (8390/10000)
+
+Epoch: 20
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.386 | Acc: 86.902% (43451/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.502 | Acc: 83.270% (8327/10000)
+
+Epoch: 21
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.377 | Acc: 86.962% (43481/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.673 | Acc: 78.670% (7867/10000)
+
+Epoch: 22
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.383 | Acc: 87.082% (43541/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.642 | Acc: 79.570% (7957/10000)
+
+Epoch: 23
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.374 | Acc: 87.296% (43648/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.754 | Acc: 78.220% (7822/10000)
+
+Epoch: 24
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.368 | Acc: 87.404% (43702/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.677 | Acc: 79.100% (7910/10000)
+
+Epoch: 25
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.370 | Acc: 87.426% (43713/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.540 | Acc: 82.210% (8221/10000)
+
+Epoch: 26
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.363 | Acc: 87.634% (43817/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.555 | Acc: 81.350% (8135/10000)
+
+Epoch: 27
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.365 | Acc: 87.506% (43753/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.580 | Acc: 80.400% (8040/10000)
+
+Epoch: 28
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.360 | Acc: 87.778% (43889/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.592 | Acc: 80.740% (8074/10000)
+
+Epoch: 29
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.353 | Acc: 87.910% (43955/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.693 | Acc: 77.370% (7737/10000)
+
+Epoch: 30
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.355 | Acc: 88.038% (44019/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.595 | Acc: 80.270% (8027/10000)
+
+Epoch: 31
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.355 | Acc: 87.972% (43986/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.506 | Acc: 82.940% (8294/10000)
+
+Epoch: 32
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.347 | Acc: 88.122% (44061/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.533 | Acc: 81.880% (8188/10000)
+
+Epoch: 33
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.348 | Acc: 88.096% (44048/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.606 | Acc: 79.940% (7994/10000)
+
+Epoch: 34
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.347 | Acc: 88.252% (44126/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.502 | Acc: 82.940% (8294/10000)
+
+Epoch: 35
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.339 | Acc: 88.534% (44267/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.563 | Acc: 81.690% (8169/10000)
+
+Epoch: 36
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.343 | Acc: 88.290% (44145/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.741 | Acc: 75.650% (7565/10000)
+
+Epoch: 37
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.339 | Acc: 88.446% (44223/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.540 | Acc: 82.870% (8287/10000)
+
+Epoch: 38
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.338 | Acc: 88.604% (44302/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.621 | Acc: 80.410% (8041/10000)
+
+Epoch: 39
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.340 | Acc: 88.510% (44255/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.496 | Acc: 83.830% (8383/10000)
+
+Epoch: 40
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.342 | Acc: 88.224% (44112/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.572 | Acc: 81.680% (8168/10000)
+
+Epoch: 41
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.336 | Acc: 88.672% (44336/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.510 | Acc: 83.740% (8374/10000)
+
+Epoch: 42
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.333 | Acc: 88.624% (44312/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.525 | Acc: 83.100% (8310/10000)
+
+Epoch: 43
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.339 | Acc: 88.524% (44262/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.492 | Acc: 84.300% (8430/10000)
+
+Epoch: 44
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.333 | Acc: 88.586% (44293/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.580 | Acc: 81.140% (8114/10000)
+
+Epoch: 45
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.333 | Acc: 88.698% (44349/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.536 | Acc: 82.850% (8285/10000)
+
+Epoch: 46
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.332 | Acc: 88.688% (44344/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.556 | Acc: 82.450% (8245/10000)
+
+Epoch: 47
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.331 | Acc: 88.642% (44321/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.608 | Acc: 81.600% (8160/10000)
+
+Epoch: 48
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.332 | Acc: 88.670% (44335/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.708 | Acc: 78.090% (7809/10000)
+
+Epoch: 49
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.321 | Acc: 88.924% (44462/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.639 | Acc: 80.820% (8082/10000)
+
+Epoch: 50
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.331 | Acc: 88.794% (44397/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.511 | Acc: 83.440% (8344/10000)
+
+Epoch: 51
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.329 | Acc: 88.724% (44362/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.480 | Acc: 83.790% (8379/10000)
+
+Epoch: 52
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.327 | Acc: 88.792% (44396/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.650 | Acc: 79.160% (7916/10000)
+
+Epoch: 53
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.324 | Acc: 88.974% (44487/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.511 | Acc: 82.780% (8278/10000)
+
+Epoch: 54
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.320 | Acc: 89.144% (44572/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.720 | Acc: 78.740% (7874/10000)
+
+Epoch: 55
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.324 | Acc: 88.984% (44492/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.543 | Acc: 81.940% (8194/10000)
+
+Epoch: 56
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.328 | Acc: 88.940% (44470/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.474 | Acc: 84.010% (8401/10000)
+
+Epoch: 57
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.323 | Acc: 88.968% (44484/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.619 | Acc: 80.010% (8001/10000)
+
+Epoch: 58
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.316 | Acc: 89.266% (44633/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.530 | Acc: 83.050% (8305/10000)
+
+Epoch: 59
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.329 | Acc: 88.730% (44365/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.429 | Acc: 85.900% (8590/10000)
+
+Epoch: 60
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.319 | Acc: 89.196% (44598/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.572 | Acc: 82.040% (8204/10000)
+
+Epoch: 61
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.325 | Acc: 88.810% (44405/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.693 | Acc: 78.340% (7834/10000)
+
+Epoch: 62
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.325 | Acc: 88.908% (44454/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.711 | Acc: 78.140% (7814/10000)
+
+Epoch: 63
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.324 | Acc: 88.956% (44478/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.684 | Acc: 78.600% (7860/10000)
+
+Epoch: 64
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.318 | Acc: 89.180% (44590/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.561 | Acc: 81.850% (8185/10000)
+
+Epoch: 65
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.323 | Acc: 88.874% (44437/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.494 | Acc: 83.380% (8338/10000)
+
+Epoch: 66
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.318 | Acc: 89.122% (44561/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.568 | Acc: 81.720% (8172/10000)
+
+Epoch: 67
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.322 | Acc: 88.982% (44491/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.623 | Acc: 80.200% (8020/10000)
+
+Epoch: 68
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.318 | Acc: 89.240% (44620/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.493 | Acc: 83.430% (8343/10000)
+
+Epoch: 69
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.319 | Acc: 89.162% (44581/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.477 | Acc: 84.170% (8417/10000)
+
+Epoch: 70
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.313 | Acc: 89.352% (44676/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.733 | Acc: 77.630% (7763/10000)
+
+Epoch: 71
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.320 | Acc: 89.130% (44565/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.498 | Acc: 82.910% (8291/10000)
+
+Epoch: 72
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.321 | Acc: 89.052% (44526/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.538 | Acc: 82.470% (8247/10000)
+
+Epoch: 73
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.316 | Acc: 89.284% (44642/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.412 | Acc: 86.570% (8657/10000)
+
+Epoch: 74
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.314 | Acc: 89.276% (44638/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.677 | Acc: 77.560% (7756/10000)
+
+Epoch: 75
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.314 | Acc: 89.412% (44706/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.787 | Acc: 76.350% (7635/10000)
+
+Epoch: 76
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.322 | Acc: 89.064% (44532/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.428 | Acc: 85.410% (8541/10000)
+
+Epoch: 77
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.314 | Acc: 89.480% (44740/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.575 | Acc: 81.570% (8157/10000)
+
+Epoch: 78
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.313 | Acc: 89.450% (44725/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.405 | Acc: 86.520% (8652/10000)
+
+Epoch: 79
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.312 | Acc: 89.454% (44727/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.589 | Acc: 81.690% (8169/10000)
+
+Epoch: 80
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.315 | Acc: 89.190% (44595/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.372 | Acc: 87.720% (8772/10000)
+
+Epoch: 81
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.318 | Acc: 89.222% (44611/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.553 | Acc: 82.160% (8216/10000)
+
+Epoch: 82
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.315 | Acc: 89.268% (44634/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.636 | Acc: 80.230% (8023/10000)
+
+Epoch: 83
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.315 | Acc: 89.278% (44639/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.477 | Acc: 84.280% (8428/10000)
+
+Epoch: 84
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.313 | Acc: 89.424% (44712/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.495 | Acc: 83.280% (8328/10000)
+
+Epoch: 85
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.315 | Acc: 89.384% (44692/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.523 | Acc: 83.290% (8329/10000)
+
+Epoch: 86
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.310 | Acc: 89.490% (44745/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.459 | Acc: 85.230% (8523/10000)
+
+Epoch: 87
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.315 | Acc: 89.316% (44658/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.543 | Acc: 81.560% (8156/10000)
+
+Epoch: 88
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.313 | Acc: 89.524% (44762/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.407 | Acc: 86.610% (8661/10000)
+
+Epoch: 89
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.312 | Acc: 89.386% (44693/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.603 | Acc: 81.470% (8147/10000)
+
+Epoch: 90
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.307 | Acc: 89.390% (44695/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.766 | Acc: 75.990% (7599/10000)
+
+Epoch: 91
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.314 | Acc: 89.394% (44697/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.632 | Acc: 79.930% (7993/10000)
+
+Epoch: 92
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.312 | Acc: 89.298% (44649/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.558 | Acc: 82.570% (8257/10000)
+
+Epoch: 93
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.309 | Acc: 89.428% (44714/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.736 | Acc: 78.060% (7806/10000)
+
+Epoch: 94
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.316 | Acc: 89.288% (44644/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.449 | Acc: 85.430% (8543/10000)
+
+Epoch: 95
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.312 | Acc: 89.422% (44711/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.450 | Acc: 84.630% (8463/10000)
+
+Epoch: 96
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.310 | Acc: 89.502% (44751/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.490 | Acc: 83.610% (8361/10000)
+
+Epoch: 97
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.307 | Acc: 89.568% (44784/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.724 | Acc: 77.790% (7779/10000)
+
+Epoch: 98
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.315 | Acc: 89.424% (44712/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.561 | Acc: 82.190% (8219/10000)
+
+Epoch: 99
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.310 | Acc: 89.576% (44788/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.518 | Acc: 82.900% (8290/10000)
+
+Epoch: 100
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.314 | Acc: 89.370% (44685/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.519 | Acc: 83.020% (8302/10000)
+
+Epoch: 101
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.316 | Acc: 89.338% (44669/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.436 | Acc: 85.550% (8555/10000)
+
+Epoch: 102
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.307 | Acc: 89.366% (44683/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.694 | Acc: 80.420% (8042/10000)
+
+Epoch: 103
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.306 | Acc: 89.484% (44742/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.482 | Acc: 84.880% (8488/10000)
+
+Epoch: 104
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.314 | Acc: 89.342% (44671/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.436 | Acc: 85.810% (8581/10000)
+
+Epoch: 105
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.308 | Acc: 89.408% (44704/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.523 | Acc: 83.220% (8322/10000)
+
+Epoch: 106
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.312 | Acc: 89.518% (44759/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.481 | Acc: 83.720% (8372/10000)
+
+Epoch: 107
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.307 | Acc: 89.722% (44861/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.415 | Acc: 85.800% (8580/10000)
+
+Epoch: 108
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.307 | Acc: 89.486% (44743/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.631 | Acc: 80.550% (8055/10000)
+
+Epoch: 109
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.308 | Acc: 89.610% (44805/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.462 | Acc: 84.760% (8476/10000)
+
+Epoch: 110
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.309 | Acc: 89.426% (44713/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.459 | Acc: 84.120% (8412/10000)
+
+Epoch: 111
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.310 | Acc: 89.424% (44712/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.569 | Acc: 82.130% (8213/10000)
+
+Epoch: 112
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.309 | Acc: 89.506% (44753/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.516 | Acc: 83.370% (8337/10000)
+
+Epoch: 113
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.311 | Acc: 89.458% (44729/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.464 | Acc: 84.780% (8478/10000)
+
+Epoch: 114
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.308 | Acc: 89.586% (44793/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.466 | Acc: 84.700% (8470/10000)
+
+Epoch: 115
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.302 | Acc: 89.612% (44806/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.504 | Acc: 83.890% (8389/10000)
+
+Epoch: 116
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.317 | Acc: 89.130% (44565/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.504 | Acc: 83.640% (8364/10000)
+
+Epoch: 117
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.305 | Acc: 89.648% (44824/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.443 | Acc: 85.460% (8546/10000)
+
+Epoch: 118
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.306 | Acc: 89.506% (44753/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.675 | Acc: 79.640% (7964/10000)
+
+Epoch: 119
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.306 | Acc: 89.640% (44820/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.490 | Acc: 83.670% (8367/10000)
+
+Epoch: 120
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.309 | Acc: 89.512% (44756/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.588 | Acc: 81.000% (8100/10000)
+
+Epoch: 121
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.306 | Acc: 89.474% (44737/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.509 | Acc: 82.750% (8275/10000)
+
+Epoch: 122
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.309 | Acc: 89.526% (44763/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.715 | Acc: 78.230% (7823/10000)
+
+Epoch: 123
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.310 | Acc: 89.500% (44750/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.480 | Acc: 84.120% (8412/10000)
+
+Epoch: 124
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.308 | Acc: 89.612% (44806/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.473 | Acc: 84.220% (8422/10000)
+
+Epoch: 125
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.307 | Acc: 89.532% (44766/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.434 | Acc: 85.210% (8521/10000)
+
+Epoch: 126
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.308 | Acc: 89.576% (44788/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.549 | Acc: 82.080% (8208/10000)
+
+Epoch: 127
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.306 | Acc: 89.658% (44829/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.432 | Acc: 84.880% (8488/10000)
+
+Epoch: 128
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.305 | Acc: 89.570% (44785/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.554 | Acc: 81.720% (8172/10000)
+
+Epoch: 129
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.306 | Acc: 89.612% (44806/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.404 | Acc: 86.630% (8663/10000)
+
+Epoch: 130
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.299 | Acc: 89.920% (44960/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.440 | Acc: 85.160% (8516/10000)
+
+Epoch: 131
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.309 | Acc: 89.482% (44741/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.531 | Acc: 82.720% (8272/10000)
+
+Epoch: 132
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.308 | Acc: 89.692% (44846/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.545 | Acc: 81.810% (8181/10000)
+
+Epoch: 133
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.309 | Acc: 89.478% (44739/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.622 | Acc: 80.620% (8062/10000)
+
+Epoch: 134
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.309 | Acc: 89.394% (44697/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.509 | Acc: 83.220% (8322/10000)
+
+Epoch: 135
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.306 | Acc: 89.694% (44847/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.475 | Acc: 84.310% (8431/10000)
+
+Epoch: 136
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.306 | Acc: 89.624% (44812/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.563 | Acc: 82.520% (8252/10000)
+
+Epoch: 137
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.305 | Acc: 89.542% (44771/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.422 | Acc: 85.920% (8592/10000)
+
+Epoch: 138
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.302 | Acc: 89.730% (44865/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.421 | Acc: 85.880% (8588/10000)
+
+Epoch: 139
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.308 | Acc: 89.690% (44845/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.474 | Acc: 84.600% (8460/10000)
+
+Epoch: 140
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.307 | Acc: 89.420% (44710/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.523 | Acc: 82.870% (8287/10000)
+
+Epoch: 141
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.307 | Acc: 89.576% (44788/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.720 | Acc: 78.360% (7836/10000)
+
+Epoch: 142
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.308 | Acc: 89.468% (44734/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.563 | Acc: 82.030% (8203/10000)
+
+Epoch: 143
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.302 | Acc: 89.782% (44891/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.566 | Acc: 82.080% (8208/10000)
+
+Epoch: 144
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.306 | Acc: 89.712% (44856/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.589 | Acc: 81.050% (8105/10000)
+
+Epoch: 145
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.304 | Acc: 89.708% (44854/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.578 | Acc: 81.740% (8174/10000)
+
+Epoch: 146
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.307 | Acc: 89.564% (44782/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.446 | Acc: 85.440% (8544/10000)
+
+Epoch: 147
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.303 | Acc: 89.710% (44855/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.453 | Acc: 84.930% (8493/10000)
+
+Epoch: 148
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.307 | Acc: 89.494% (44747/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.436 | Acc: 85.780% (8578/10000)
+
+Epoch: 149
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.313 | Acc: 89.268% (44634/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.661 | Acc: 78.620% (7862/10000)
+
+Epoch: 150
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.301 | Acc: 89.940% (44970/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.483 | Acc: 84.250% (8425/10000)
+
+Epoch: 151
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.306 | Acc: 89.706% (44853/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.429 | Acc: 85.360% (8536/10000)
+
+Epoch: 152
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.305 | Acc: 89.642% (44821/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.420 | Acc: 86.050% (8605/10000)
+
+Epoch: 153
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.302 | Acc: 89.636% (44818/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.497 | Acc: 83.610% (8361/10000)
+
+Epoch: 154
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.312 | Acc: 89.474% (44737/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.526 | Acc: 82.780% (8278/10000)
+
+Epoch: 155
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.299 | Acc: 89.702% (44851/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.594 | Acc: 81.010% (8101/10000)
+
+Epoch: 156
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.310 | Acc: 89.424% (44712/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.604 | Acc: 80.350% (8035/10000)
+
+Epoch: 157
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.307 | Acc: 89.464% (44732/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.546 | Acc: 82.630% (8263/10000)
+
+Epoch: 158
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.307 | Acc: 89.684% (44842/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.571 | Acc: 81.370% (8137/10000)
+
+Epoch: 159
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.305 | Acc: 89.588% (44794/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.657 | Acc: 79.200% (7920/10000)
+
+Epoch: 160
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.301 | Acc: 89.666% (44833/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.476 | Acc: 84.680% (8468/10000)
+
+Epoch: 161
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.307 | Acc: 89.506% (44753/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.446 | Acc: 85.190% (8519/10000)
+
+Epoch: 162
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.306 | Acc: 89.396% (44698/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.476 | Acc: 84.780% (8478/10000)
+
+Epoch: 163
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.304 | Acc: 89.478% (44739/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.416 | Acc: 86.810% (8681/10000)
+
+Epoch: 164
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.307 | Acc: 89.582% (44791/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.441 | Acc: 85.960% (8596/10000)
+
+Epoch: 165
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.303 | Acc: 89.634% (44817/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.520 | Acc: 83.480% (8348/10000)
+
+Epoch: 166
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.302 | Acc: 89.844% (44922/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.553 | Acc: 82.790% (8279/10000)
+
+Epoch: 167
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.305 | Acc: 89.612% (44806/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.469 | Acc: 84.660% (8466/10000)
+
+Epoch: 168
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.309 | Acc: 89.492% (44746/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.636 | Acc: 78.670% (7867/10000)
+
+Epoch: 169
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.306 | Acc: 89.560% (44780/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.607 | Acc: 81.660% (8166/10000)
+
+Epoch: 170
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.308 | Acc: 89.522% (44761/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.443 | Acc: 84.900% (8490/10000)
+
+Epoch: 171
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.306 | Acc: 89.556% (44778/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.563 | Acc: 81.480% (8148/10000)
+
+Epoch: 172
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.305 | Acc: 89.668% (44834/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.533 | Acc: 82.420% (8242/10000)
+
+Epoch: 173
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.306 | Acc: 89.624% (44812/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.593 | Acc: 81.830% (8183/10000)
+
+Epoch: 174
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.302 | Acc: 89.794% (44897/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.592 | Acc: 81.050% (8105/10000)
+
+Epoch: 175
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.308 | Acc: 89.478% (44739/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.635 | Acc: 79.310% (7931/10000)
+
+Epoch: 176
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.304 | Acc: 89.672% (44836/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.542 | Acc: 82.170% (8217/10000)
+
+Epoch: 177
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.304 | Acc: 89.632% (44816/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.451 | Acc: 85.050% (8505/10000)
+
+Epoch: 178
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.300 | Acc: 89.904% (44952/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.487 | Acc: 84.030% (8403/10000)
+
+Epoch: 179
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.310 | Acc: 89.486% (44743/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.573 | Acc: 81.070% (8107/10000)
+
+Epoch: 180
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.307 | Acc: 89.626% (44813/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.575 | Acc: 81.750% (8175/10000)
+
+Epoch: 181
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.303 | Acc: 89.832% (44916/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.664 | Acc: 79.070% (7907/10000)
+
+Epoch: 182
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.307 | Acc: 89.586% (44793/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.461 | Acc: 84.730% (8473/10000)
+
+Epoch: 183
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.307 | Acc: 89.536% (44768/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.383 | Acc: 86.690% (8669/10000)
+
+Epoch: 184
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.298 | Acc: 89.872% (44936/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.579 | Acc: 81.040% (8104/10000)
+
+Epoch: 185
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.304 | Acc: 89.586% (44793/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.503 | Acc: 84.300% (8430/10000)
+
+Epoch: 186
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.303 | Acc: 89.608% (44804/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.487 | Acc: 84.260% (8426/10000)
+
+Epoch: 187
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.301 | Acc: 89.664% (44832/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.495 | Acc: 83.900% (8390/10000)
+
+Epoch: 188
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.306 | Acc: 89.610% (44805/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.416 | Acc: 86.150% (8615/10000)
+
+Epoch: 189
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.303 | Acc: 89.716% (44858/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.563 | Acc: 82.640% (8264/10000)
+
+Epoch: 190
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.305 | Acc: 89.616% (44808/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.583 | Acc: 80.930% (8093/10000)
+
+Epoch: 191
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.304 | Acc: 89.698% (44849/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.424 | Acc: 86.050% (8605/10000)
+
+Epoch: 192
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.306 | Acc: 89.590% (44795/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.517 | Acc: 83.200% (8320/10000)
+
+Epoch: 193
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.304 | Acc: 89.698% (44849/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.492 | Acc: 83.880% (8388/10000)
+
+Epoch: 194
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.303 | Acc: 89.796% (44898/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.526 | Acc: 82.490% (8249/10000)
+
+Epoch: 195
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.299 | Acc: 89.832% (44916/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.441 | Acc: 85.790% (8579/10000)
+
+Epoch: 196
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.305 | Acc: 89.614% (44807/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.479 | Acc: 84.360% (8436/10000)
+
+Epoch: 197
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.306 | Acc: 89.698% (44849/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.458 | Acc: 84.750% (8475/10000)
+
+Epoch: 198
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.304 | Acc: 89.764% (44882/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.521 | Acc: 83.570% (8357/10000)
+
+Epoch: 199
+Training On Batch 050
+Training On Batch 100
+Training On Batch 150
+Training On Batch 200
+Training On Batch 250
+Training On Batch 300
+Training On Batch 350
+Loss: 0.303 | Acc: 89.630% (44815/50000)
+Testing On Batch 050
+Testing On Batch 100
+Loss: 0.571 | Acc: 81.710% (8171/10000)

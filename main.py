@@ -11,9 +11,11 @@ import torchvision.transforms as transforms
 from torchsummary import summary
 
 import os
+import sys
 import argparse
 
 from model import resnet
+from rescale import rescale
 from config import config
 #from utils import progress_bar
 
@@ -76,8 +78,9 @@ net = net.to(device)
 if device == 'cuda':
     net = torch.nn.DataParallel(net)
     cudnn.benchmark = True
-summary(net, (3, 32, 32))
-
+#summary(net, (3, 32, 32))
+#rescale(net, 'layer1', 1, 2)
+#sys.exit()
 if args.resume:
     # Load checkpoint.
     print('==> Resuming from checkpoint..')
@@ -88,8 +91,13 @@ if args.resume:
     start_epoch = checkpoint['epoch']
 
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.SGD(net.parameters(), lr=args.lr,
-                      momentum=0.9, weight_decay=5e-4)
+if config.optim == 'SGD+Momentum':
+    optimizer = optim.SGD(net.parameters(), lr=args.lr,
+            momentum=0.9, weight_decay=5e-4)
+elif config.optim == 'Adam':
+    optimizer = optim.Adam(net.parameters())
+elif config.optim == 'SGD':
+    optimizer = optim.SGD(net.parameters(), lr=args.lr)
 
 # Training
 
@@ -172,6 +180,8 @@ if __name__ == '__main__':
     train_loss_acc_list = []
     test_loss_acc_list = []
     for epoch in range(start_epoch, start_epoch+200):
+        if (epoch + 1) == 100:
+            rescale(net, 'all', None, None, config.alpha)
         train_loss_acc_list.append(train(epoch))
         test_loss_acc_list.append(test(epoch))
     np.save(os.path.join(

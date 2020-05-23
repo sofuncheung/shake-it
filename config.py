@@ -3,4 +3,6 @@
 import os
 
 class config(object):
-    output_file_pth = os.path.join('/mnt/zfsusers/sofuncheung/shake-it/playground', 'lr-0.01')
+    alpha = 5
+    optim = 'SGD'  # Options: SGD, SGD+Momentum, Adam
+    output_file_pth = '/mnt/zfsusers/sofuncheung/shake-it/playground/pure-SGD'
