@@ -17,11 +17,12 @@ import argparse
 from model import resnet
 from rescale import rescale
 from config import config
-#from utils import progress_bar
+from utils import adjust_learning_rate
+from sharpness import Sharpness
 
 
 parser = argparse.ArgumentParser(description='PyTorch CIFAR10 Training')
-parser.add_argument('--lr', default=0.1, type=float, help='learning rate')
+parser.add_argument('--lr', default=0.01, type=float, help='learning rate')
 parser.add_argument('--resume', '-r', action='store_true',
                     help='resume from checkpoint')
 args = parser.parse_args()
@@ -48,12 +49,12 @@ transform_test = transforms.Compose([
 trainset = torchvision.datasets.CIFAR10(
     root='~/shake-it/data', train=True, download=True, transform=transform_train)
 trainloader = torch.utils.data.DataLoader(
-    trainset, batch_size=128, shuffle=True, num_workers=16)
+    trainset, batch_size=config.train_batch_size, shuffle=True, num_workers=config.num_workers)
 
 testset = torchvision.datasets.CIFAR10(
     root='~/shake-it/data', train=False, download=True, transform=transform_test)
 testloader = torch.utils.data.DataLoader(
-    testset, batch_size=100, shuffle=False, num_workers=16)
+    testset, batch_size=config.test_batch_size, shuffle=False, num_workers=config.num_workers)
 
 classes = ('plane', 'car', 'bird', 'cat', 'deer',
            'dog', 'frog', 'horse', 'ship', 'truck')
@@ -84,8 +85,12 @@ if device == 'cuda':
 if args.resume:
     # Load checkpoint.
     print('==> Resuming from checkpoint..')
-    assert os.path.isdir('checkpoint'), 'Error: no checkpoint directory found!'
-    checkpoint = torch.load('./checkpoint/ckpt.pth')
+    assert os.path.isdir(
+            os.path.join(config.output_file_pth, 'checkpoint')
+            ), 'Error: no checkpoint directory found!'
+    checkpoint = torch.load(
+            os.path.join(
+                config.output_file_pth, 'checkpoint/ckpt.pth'))
     net.load_state_dict(checkpoint['net'])
     best_acc = checkpoint['acc']
     start_epoch = checkpoint['epoch']
@@ -95,10 +100,13 @@ if config.optim == 'SGD+Momentum':
     optimizer = optim.SGD(net.parameters(), lr=args.lr,
             momentum=0.9, weight_decay=5e-4)
 elif config.optim == 'Adam':
-    optimizer = optim.Adam(net.parameters())
+    optimizer = optim.Adam(net.parameters(), lr=args.lr)
 elif config.optim == 'SGD':
     optimizer = optim.SGD(net.parameters(), lr=args.lr)
 
+# Learning Rate Decay
+decayRate = 0.96
+lr_scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer=optimizer, gamma=decayRate)
 # Training
 
 
@@ -154,12 +162,11 @@ def test(epoch):
             #     batch_idx, len(testloader), 'Loss: %.3f | Acc: %.3f%% (%d/%d)'
             #     % (test_loss/(batch_idx+1),
             #        100.*correct/total, correct, total))
-            if (batch_idx+1) % 50 == 0:
+            if (batch_idx+1) % 20 == 0:
                 print('Testing On Batch %03d' % (batch_idx+1))
         epoch_loss = test_loss/(batch_idx+1)
         epoch_acc = correct/total
         print('Loss: %.3f | Acc: %.3f%% (%d/%d)' % (epoch_loss, 100.*epoch_acc, correct, total))
-        return (epoch_loss, 100.*epoch_acc)
 
     # Save checkpoint.
     acc = 100.*correct/total
@@ -170,21 +177,37 @@ def test(epoch):
             'acc': acc,
             'epoch': epoch,
         }
-        if not os.path.isdir('checkpoint'):
-            os.mkdir('checkpoint')
-        torch.save(state, './checkpoint/ckpt.pth')
+        if not os.path.isdir(
+                os.path.join(config.output_file_pth, 'checkpoint')):
+            os.mkdir(
+                    os.path.join(config.output_file_pth, 'checkpoint'))
+        torch.save(state, os.path.join(
+            config.output_file_pth, 'checkpoint/ckpt.pth'))
         best_acc = acc
+
+    return (epoch_loss, 100.*epoch_acc)
 
 if __name__ == '__main__':
     assert os.path.isdir(config.output_file_pth), "Target Output Directory Doesn't Exist!"
     train_loss_acc_list = []
     test_loss_acc_list = []
+    if config.sharpness == True:
+        sharpness = []
     for epoch in range(start_epoch, start_epoch+200):
         if (epoch + 1) == 100:
             rescale(net, 'all', None, None, config.alpha)
+            adjust_learning_rate(optimizer, args.lr)
         train_loss_acc_list.append(train(epoch))
         test_loss_acc_list.append(test(epoch))
+        if config.sharpness == True:
+            S = Sharpness(net, criterion, trainset, device)
+            sharpness.append(S.sharpness())
+        if config.lr_decay:
+            lr_scheduler.step()
     np.save(os.path.join(
         config.output_file_pth,'train_loss_acc_list.npy'), train_loss_acc_list)
     np.save(os.path.join(
         config.output_file_pth, 'test_loss_acc_list.npy'), test_loss_acc_list)
+    if config.sharpness == True:
+        np.save(os.path.join(
+            config.output_file_pth, 'sharpness_list.npy'), sharpness)

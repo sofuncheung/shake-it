@@ -12,6 +12,8 @@ Some helper functions for PyTorch, including:
 import os
 import sys
 import time
+import numpy as np
+import matplotlib.pyplot as plt
 
 import torch
 import torch.nn as nn
@@ -49,13 +51,13 @@ def init_params(net):
             if m.bias:
                 init.constant(m.bias, 0)
 
+if __name__ == '__main__':
+    _, term_width = os.popen('stty size', 'r').read().split()
+    term_width = int(term_width)
 
-_, term_width = os.popen('stty size', 'r').read().split()
-term_width = int(term_width)
-
-TOTAL_BAR_LENGTH = 65.
-last_time = time.time()
-begin_time = last_time
+    TOTAL_BAR_LENGTH = 65.
+    last_time = time.time()
+    begin_time = last_time
 
 
 def progress_bar(current, total, msg=None):
@@ -133,3 +135,14 @@ def format_time(seconds):
     if f == '':
         f = '0ms'
     return f
+
+
+def adjust_learning_rate(optimizer, lr):
+    for param_group in optimizer.param_groups:
+        param_group['lr'] = lr
+
+
+def max_value_plot(file_name):
+    max_value_list = np.load(file_name)
+    plt.plot(max_value_list)
+    plt.savefig('max_value_list.png', dpi=300)
