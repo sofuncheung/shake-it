@@ -66,7 +66,8 @@ class Sharpness(object):
                 loss = self.loss(outputs, targets)
                 L_w += loss.item()
             L_w = L_w/(batch_idx+1)
-        w = net.state_dict()
+        w = net.state_dict().copy()
+        w = self.del_key_from_dic(w, 'num_batches_tracked')
         max_value = 0
         max_value_list = []
 
@@ -83,26 +84,36 @@ class Sharpness(object):
                 new_loss.backward()
                 optimizer.step()
 
-                new_w = net.state_dict()
+                new_w = net.state_dict().copy()
+                new_w = self.del_key_from_dic(new_w, 'num_batches_tracked')
+                #self._print_w_shape(w)
                 self._print_different_w(w, new_w)
-                sys.exit()
+                # sys.exit()
                 new_w = self.clip_params(clip_eps, w, new_w)
                 assert self._test_clip_is_effective(clip_eps, w, new_w), 'Error: Fail Box!!!'
-                net.load_state_dict(new_w, strict=True)
+                net.load_state_dict(new_w, strict=False)
                 del new_w
                 torch.cuda.empty_cache()
 
                 new_outputs = net(inputs)
                 epoch_loss += self.loss(new_outputs, targets).item()
-                print('Batch Loss:', self.loss(new_outputs, targets).item())
+                # print('Batch Loss:', self.loss(new_outputs, targets).item())
             epoch_loss = epoch_loss / (batch_idx+1)
             max_value = max(max_value, epoch_loss)
             max_value_list.append(max_value)
         np.save(os.path.join(
             config.output_file_pth, 'max_value_list.npy'), max_value_list)
         sharpness = 100 * (max_value - L_w) / (1 + L_w)
+        print('Sharpness:', sharpness)
         return sharpness
 
+
+    @staticmethod
+    def del_key_from_dic(dic, keyword):
+        for i in dic.copy():
+            if keyword in i:
+                del dic[i]
+        return dic
 
     @staticmethod
     def _test_clip_is_effective(eps, params, new_params):
@@ -136,9 +147,16 @@ class Sharpness(object):
     def _print_different_w(params, new_params):
         for i in new_params:
             if not torch.equal(new_params[i], params[i]):
-                print(params[i])
+                print('\n', i, params[i])
                 print('*'*88)
-                print(new_params[i])
+                print(i, new_params[i], '\n')
+
+    @staticmethod
+    def _print_w_shape(params):
+        for i in params:
+            print(params[i].shape)
+
+
 
 if __name__ == '__main__':
     from main import net, criterion, trainset, device
