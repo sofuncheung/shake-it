@@ -36,13 +36,16 @@ class Sharpness(object):
         for i in new_params:
             diff = new_params[i] - params[i]
             eps_mtx = eps * (torch.abs(params[i]) + 1)
+            is_out_of_bound = False
             outer_up = torch.nonzero(diff>eps_mtx, as_tuple=False)
             if outer_up.shape[0] != 0:
+                is_out_of_bound = True
                 outer_up = [tuple(temp) for temp in outer_up]
                 for j in outer_up:
                     diff[j] = eps_mtx[j]
             outer_low = torch.nonzero(diff<-eps_mtx, as_tuple=False)
             if outer_low.shape[0] != 0:
+                is_out_of_bound = True
                 outer_low = [tuple(temp) for temp in outer_low]
                 for j in outer_low:
                     diff[j] = -eps_mtx[j]
@@ -66,11 +69,11 @@ class Sharpness(object):
                 loss = self.loss(outputs, targets)
                 L_w += loss.item()
             L_w = L_w/(batch_idx+1)
-        w = net.state_dict().copy()
+        w = copy.deepcopy(net.state_dict())
         w = self.del_key_from_dic(w, 'num_batches_tracked')
+        self.stop_tracking(w)
         max_value = 0
         max_value_list = []
-
         if opt_mtd == 'SGD':
             optimizer = optim.SGD(net.parameters(), lr=1e-3)
         net.train()
@@ -84,20 +87,22 @@ class Sharpness(object):
                 new_loss.backward()
                 optimizer.step()
 
-                new_w = net.state_dict().copy()
+                new_w = copy.deepcopy(net.state_dict())
+                self.stop_tracking(new_w)
                 new_w = self.del_key_from_dic(new_w, 'num_batches_tracked')
-                #self._print_w_shape(w)
-                self._print_different_w(w, new_w)
-                # sys.exit()
                 new_w = self.clip_params(clip_eps, w, new_w)
-                assert self._test_clip_is_effective(clip_eps, w, new_w), 'Error: Fail Box!!!'
+                assert self._test_clip_is_effective(
+                        clip_eps, w, new_w), 'Error: Fail Box!!!'
                 net.load_state_dict(new_w, strict=False)
+                #for value in net.state_dict().values():
+                #    print(value.requires_grad)
+                #sys.exit()
                 del new_w
                 torch.cuda.empty_cache()
 
                 new_outputs = net(inputs)
                 epoch_loss += self.loss(new_outputs, targets).item()
-                # print('Batch Loss:', self.loss(new_outputs, targets).item())
+                print('Batch Loss:', self.loss(new_outputs, targets).item(), flush=True)
             epoch_loss = epoch_loss / (batch_idx+1)
             max_value = max(max_value, epoch_loss)
             max_value_list.append(max_value)
@@ -109,6 +114,13 @@ class Sharpness(object):
 
 
     @staticmethod
+    def stop_tracking(w):
+        for i in w:
+            w[i].requires_grad_(False)
+        return w
+
+
+    @staticmethod
     def del_key_from_dic(dic, keyword):
         for i in dic.copy():
             if keyword in i:
@@ -116,19 +128,23 @@ class Sharpness(object):
         return dic
 
     @staticmethod
-    def _test_clip_is_effective(eps, params, new_params):
+    def _test_clip_is_effective(eps, params, new_params, num_eps=1e-8):
         for i in new_params:
-            if torch.max(new_params[i] - params[i]) > eps:
+            if torch.max(
+                    (torch.abs(new_params[i]-params[i])-
+                    (eps*(torch.abs(params[i])+1))) > num_eps
+                    ) > 0:
                 return False
             else:
                 return True
 
     @staticmethod
-    def _max_diff(params, new_params):
-        l = []
+    def _max_diff_minus_eps(eps, params, new_params):
         for i in new_params:
-            l.append(float(torch.max(new_params[i] - params[i])))
-        return max(l)
+            print(
+                torch.max(
+                    torch.abs(new_params[i] - params[i])-eps*(torch.abs(params[i])+1)))
+        return None
 
     @staticmethod
     def _median_diff(params, new_params):
@@ -159,6 +175,7 @@ class Sharpness(object):
 
 
 if __name__ == '__main__':
+    # print('CPUs:', os.cpu_count())
     from main import net, criterion, trainset, device
     S = Sharpness(net, criterion, trainset, device)
     print('Sharpness:', S.sharpness())
