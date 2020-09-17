@@ -93,6 +93,7 @@ class Sharpness(object):
                 new_w = self.clip_params(clip_eps, w, new_w)
                 assert self._test_clip_is_effective(
                         clip_eps, w, new_w), 'Error: Fail Box!!!'
+                # self.stop_tracking(new_w)
                 net.load_state_dict(new_w, strict=False)
                 #for value in net.state_dict().values():
                 #    print(value.requires_grad)
