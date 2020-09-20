@@ -91,6 +91,8 @@ class Sharpness(object):
                 self.stop_tracking(new_w)
                 new_w = self.del_key_from_dic(new_w, 'num_batches_tracked')
                 new_w = self.clip_params(clip_eps, w, new_w)
+                # The above sentence might have caused the slowing down.
+                # A best place to start with narrowing down and debug.
                 assert self._test_clip_is_effective(
                         clip_eps, w, new_w), 'Error: Fail Box!!!'
                 # self.stop_tracking(new_w)

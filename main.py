@@ -14,6 +14,7 @@ import os
 import sys
 import argparse
 
+from sensitivity import compute_jacobian_norm_sum
 from model import resnet
 from rescale import rescale
 from config import config
@@ -62,7 +63,8 @@ classes = ('plane', 'car', 'bird', 'cat', 'deer',
 # Model
 print('==> Building model..')
 # net = VGG('VGG19')
-net = resnet.ResNet18()
+# net = resnet.ResNet18()
+net = resnet.ResNet50()
 # net = PreActResNet18()
 # net = GoogLeNet()
 # net = DenseNet121()
@@ -147,10 +149,15 @@ def test(epoch):
     test_loss = 0
     correct = 0
     total = 0
-    with torch.no_grad():
-        for batch_idx, (inputs, targets) in enumerate(testloader):
-            inputs, targets = inputs.to(device), targets.to(device)
-            outputs = net(inputs)
+    jacobian_norm_sum = 0
+    for batch_idx, (inputs, targets) in enumerate(testloader):
+        inputs, targets = inputs.to(device), targets.to(device)
+        if config.sensitivity_cons == True:
+            inputs.requires_grad = True
+        outputs = net(inputs)
+        if config.sensitivity_cons == True:
+            jacobian_norm_sum += compute_jacobian_norm_sum(inputs, outputs)
+        with torch.no_grad():
             loss = criterion(outputs, targets)
 
             test_loss += loss.item()
@@ -164,9 +171,11 @@ def test(epoch):
             #        100.*correct/total, correct, total))
             if (batch_idx+1) % 20 == 0:
                 print('Testing On Batch %03d' % (batch_idx+1))
-        epoch_loss = test_loss/(batch_idx+1)
-        epoch_acc = correct/total
-        print('Loss: %.3f | Acc: %.3f%% (%d/%d)' % (epoch_loss, 100.*epoch_acc, correct, total))
+    epoch_loss = test_loss/(batch_idx+1)
+    epoch_acc = correct/total
+    print('Loss: %.3f | Acc: %.3f%% (%d/%d)' % (epoch_loss, 100.*epoch_acc, correct, total))
+
+    epoch_sensitivity = jacobian_norm_sum / len(testset)
 
     # Save checkpoint.
     acc = 100.*correct/total
@@ -185,7 +194,7 @@ def test(epoch):
             config.output_file_pth, 'checkpoint/ckpt.pth'))
         best_acc = acc
 
-    return (epoch_loss, 100.*epoch_acc)
+    return ((epoch_loss, 100.*epoch_acc), epoch_sensitivity)
 
 if __name__ == '__main__':
     assert os.path.isdir(config.output_file_pth), "Target Output Directory Doesn't Exist!"
@@ -193,15 +202,22 @@ if __name__ == '__main__':
     test_loss_acc_list = []
     if config.sharpness == True:
         sharpness = []
+    if config.sensitivity_cons == True:
+        sensitivity_cons = []
     for epoch in range(start_epoch, start_epoch+200):
-        if (epoch + 1) == 100:
-            rescale(net, 'all', None, None, config.alpha)
-            adjust_learning_rate(optimizer, args.lr)
-        train_loss_acc_list.append(train(epoch))
-        test_loss_acc_list.append(test(epoch))
+        # if (epoch + 1) == 100:
+        #     rescale(net, 'all', None, None, config.alpha)
+        #     adjust_learning_rate(optimizer, args.lr)
+        train_returns = train(epoch)
+        test_returns = test(epoch)
+        train_loss_acc_list.append(train_returns)
+        test_loss_acc_list.append(test_returns[0])
+
         if config.sharpness == True:
             S = Sharpness(net, criterion, trainset, device)
             sharpness.append(S.sharpness())
+        if config.sensitivity_cons == True:
+            sensitivity_cons.append(test_returns[1])
         if config.lr_decay:
             lr_scheduler.step()
     np.save(os.path.join(
@@ -211,3 +227,7 @@ if __name__ == '__main__':
     if config.sharpness == True:
         np.save(os.path.join(
             config.output_file_pth, 'sharpness_list.npy'), sharpness)
+    if config.sensitivity_cons == True:
+        np.save(os.path.join(
+            config.output_file_pth, 'sensitivity_list.npy'), sensitivity_cons)
+

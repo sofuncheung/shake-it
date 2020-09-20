@@ -27,7 +27,7 @@ class Sensitivity(object):
         self.device = device
 
 
-def compute_jacobian_norm(inputs, output):
+def compute_jacobian_norm_sum(inputs, output):
     """
     :param inputs: Batch X Size (e.g. Depth X Width X Height)
     :param output: Batch X Classes
@@ -51,6 +51,6 @@ def compute_jacobian_norm(inputs, output):
         jacobian[i] = inputs.grad.data
 
     jacobian = torch.transpose(jacobian, dim0=0, dim1=1)
-    print(torch.Size(torch.norm(jacobian, dim=(1,2))))
-    return torch.norm(jacobian, dim=(1,2))
+    jacobian = torch.reshape(jacobian, (jacobian.shape[0], -1))
+    return torch.sum(torch.norm(jacobian, dim=1))
 
