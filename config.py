@@ -11,5 +11,5 @@ class config(object):
     train_batch_size = 128
     test_batch_size = 128
     sharpness = False
-    sensitivity_cons == True # Recording input sensitivity for each epoch of training.
-    sensitivity_one_off == False # Compute input sensitivity at the end of traning.
+    sensitivity_cons = True # Recording input sensitivity for each epoch of training.
+    sensitivity_one_off = False # Compute input sensitivity at the end of traning.
