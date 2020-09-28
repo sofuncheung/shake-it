@@ -175,7 +175,7 @@ def test(epoch):
     epoch_acc = correct/total
     print('Loss: %.3f | Acc: %.3f%% (%d/%d)' % (epoch_loss, 100.*epoch_acc, correct, total))
 
-    epoch_sensitivity = jacobian_norm_sum / len(testset)
+    epoch_sensitivity = float(jacobian_norm_sum / len(testset))
 
     # Save checkpoint.
     acc = 100.*correct/total
