@@ -9,6 +9,7 @@ import torch.backends.cudnn as cudnn
 import torchvision
 import torchvision.transforms as transforms
 from torchsummary import summary
+from torch.utils.data.sampler import SubsetRandomSampler
 
 import os
 import sys
@@ -49,8 +50,24 @@ transform_test = transforms.Compose([
 
 trainset = torchvision.datasets.CIFAR10(
     root='~/shake-it/data', train=True, download=True, transform=transform_train)
-trainloader = torch.utils.data.DataLoader(
-    trainset, batch_size=config.train_batch_size, shuffle=True, num_workers=config.num_workers)
+if config.training_set_size == len(trainset):
+    trainloader = torch.utils.data.DataLoader(
+        trainset,
+        batch_size=config.train_batch_size,
+        shuffle=True,
+        num_workers=config.num_workers
+        )
+else:
+    indices = list(range(len(trainset)))
+    np.random.shuffle(indices)
+    train_indices = indices[:config.training_set_size]
+    trainloader = torch.utils.data.DataLoader(
+        trainset,
+        batch_size=config.train_batch_size,
+        sampler=SubsetRandomSampler(train_indices),
+        shuffle=False,
+        num_workers=config.num_workers
+        )
 
 testset = torchvision.datasets.CIFAR10(
     root='~/shake-it/data', train=False, download=True, transform=transform_test)
@@ -143,7 +160,7 @@ def train(epoch):
     return (epoch_loss, 100.*epoch_acc)
 
 
-def test(epoch):
+def test(epoch, cal_sensitivity=False):
     global best_acc
     net.eval()
     test_loss = 0
@@ -152,10 +169,10 @@ def test(epoch):
     jacobian_norm_sum = 0
     for batch_idx, (inputs, targets) in enumerate(testloader):
         inputs, targets = inputs.to(device), targets.to(device)
-        if config.sensitivity_cons == True:
+        if cal_sensitivity == True:
             inputs.requires_grad = True
         outputs = net(inputs)
-        if config.sensitivity_cons == True:
+        if cal_sensitivity == True:
             jacobian_norm_sum += compute_jacobian_norm_sum(inputs, outputs)
         with torch.no_grad():
             loss = criterion(outputs, targets)
@@ -204,12 +221,15 @@ if __name__ == '__main__':
         sharpness = []
     if config.sensitivity_cons == True:
         sensitivity_cons = []
-    for epoch in range(start_epoch, start_epoch+200):
+    for epoch in range(start_epoch, start_epoch+500):
         # if (epoch + 1) == 100:
         #     rescale(net, 'all', None, None, config.alpha)
         #     adjust_learning_rate(optimizer, args.lr)
         train_returns = train(epoch)
-        test_returns = test(epoch)
+        if config.sensitivity_cons == True:
+            test_returns = test(epoch, cal_sensitivity=True)
+        else:
+            test_returns = test(epoch, cal_sensitivity=False)
         train_loss_acc_list.append(train_returns)
         test_loss_acc_list.append(test_returns[0])
 
@@ -220,6 +240,12 @@ if __name__ == '__main__':
             sensitivity_cons.append(test_returns[1])
         if config.lr_decay:
             lr_scheduler.step()
+
+        if config.sensitivity_one_off == True:
+            if train_returns[1] == 1.:
+                sensitivity_one_off = test(epoch, cal_sensitivity=True)[1]
+                print('The sensitivity at reaching zero training error is: ', sensitivity_one_off)
+                break
     np.save(os.path.join(
         config.output_file_pth,'train_loss_acc_list.npy'), train_loss_acc_list)
     np.save(os.path.join(
@@ -229,5 +255,5 @@ if __name__ == '__main__':
             config.output_file_pth, 'sharpness_list.npy'), sharpness)
     if config.sensitivity_cons == True:
         np.save(os.path.join(
-            config.output_file_pth, 'sensitivity_list.npy'), sensitivity_cons)
+             config.output_file_pth, 'sensitivity_list.npy'), sensitivity_cons)
 

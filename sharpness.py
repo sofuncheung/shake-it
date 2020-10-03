@@ -28,7 +28,7 @@ class Sharpness(object):
                 shuffle=True, num_workers=config.num_workers)
         self.testloader = torch.utils.data.DataLoader(
                 dataset, batch_size=config.test_batch_size,
-                shuffle=False, num_workers=config.num_workers)
+                shuffle=False, num_workers=config.num_workers)  # Note this is not on the text set.
         # self.optimizer = optim.SGD(net.parameters(), lr=1e-3) # Have to use vanilla SGD.
         self.device = device
 
@@ -90,12 +90,14 @@ class Sharpness(object):
                 new_w = copy.deepcopy(net.state_dict())
                 self.stop_tracking(new_w)
                 new_w = self.del_key_from_dic(new_w, 'num_batches_tracked')
+                '''
                 new_w = self.clip_params(clip_eps, w, new_w)
                 # The above sentence might have caused the slowing down.
                 # A best place to start with narrowing down and debug.
                 assert self._test_clip_is_effective(
                         clip_eps, w, new_w), 'Error: Fail Box!!!'
                 # self.stop_tracking(new_w)
+                '''
                 net.load_state_dict(new_w, strict=False)
                 #for value in net.state_dict().values():
                 #    print(value.requires_grad)
