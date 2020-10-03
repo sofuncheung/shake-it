@@ -6,3 +6,7 @@ python*
 
 playground/
 
+tpu/
+bin-UK/
+max_value_list*
+noisy_student/

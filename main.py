@@ -221,7 +221,7 @@ if __name__ == '__main__':
         sharpness = []
     if config.sensitivity_cons == True:
         sensitivity_cons = []
-    for epoch in range(start_epoch, start_epoch+500):
+    for epoch in range(start_epoch, start_epoch+10000):
         # if (epoch + 1) == 100:
         #     rescale(net, 'all', None, None, config.alpha)
         #     adjust_learning_rate(optimizer, args.lr)
@@ -242,7 +242,7 @@ if __name__ == '__main__':
             lr_scheduler.step()
 
         if config.sensitivity_one_off == True:
-            if train_returns[1] == 1.:
+            if train_returns[1] == 100.:
                 sensitivity_one_off = test(epoch, cal_sensitivity=True)[1]
                 print('The sensitivity at reaching zero training error is: ', sensitivity_one_off)
                 break
