@@ -141,13 +141,13 @@ class Sharpness(object):
         return dic
 
     @staticmethod
-    def _test_clip_is_effective(eps, params, new_params, num_eps=1e-8):
+    def _test_clip_is_effective(eps, params, new_params, num_eps=1e-7):
         for i in new_params:
             if torch.max(
                     (torch.abs(new_params[i]-params[i])-
                     (eps*(torch.abs(params[i])+1))) > num_eps
                     ) > 0:
-
+                '''
                 where_out = torch.nonzero(
                         (torch.abs(new_params[i]-params[i])-
                     (eps*(torch.abs(params[i])+1))) > num_eps, as_tuple=True
@@ -158,6 +158,14 @@ class Sharpness(object):
                 print('Box limits:')
                 print((eps*(torch.abs(params[i])+1))[where_out])
 
+                print('Difference minus Box:')
+                print((torch.abs(new_params[i]-params[i])-
+                    (eps*(torch.abs(params[i])+1)))[where_out])
+
+                print('Whether it is large than num_eps:')
+                print((torch.abs(new_params[i]-params[i])-
+                    (eps*(torch.abs(params[i])+1)))[where_out] > num_eps)
+                '''
                 return False
         return True
 
