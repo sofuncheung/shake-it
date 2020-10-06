@@ -98,9 +98,9 @@ net = net.to(device)
 if device == 'cuda':
     net = torch.nn.DataParallel(net)
     cudnn.benchmark = True
-summary(net, (3, 32, 32))
-#rescale(net, 'layer1', 1, 2)
-#sys.exit()
+# summary(net, (3, 32, 32))
+# rescale(net, 'layer1', 1, 2)
+# sys.exit()
 if args.resume:
     # Load checkpoint.
     print('==> Resuming from checkpoint..')
