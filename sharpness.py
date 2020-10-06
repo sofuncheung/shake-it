@@ -147,7 +147,6 @@ class Sharpness(object):
                     (torch.abs(new_params[i]-params[i])-
                     (eps*(torch.abs(params[i])+1))) > num_eps
                     ) > 0:
-                '''
                 where_out = torch.nonzero(
                         (torch.abs(new_params[i]-params[i])-
                     (eps*(torch.abs(params[i])+1))) > num_eps, as_tuple=True
@@ -165,7 +164,6 @@ class Sharpness(object):
                 print('Whether it is large than num_eps:')
                 print((torch.abs(new_params[i]-params[i])-
                     (eps*(torch.abs(params[i])+1)))[where_out] > num_eps)
-                '''
                 return False
         return True
 
