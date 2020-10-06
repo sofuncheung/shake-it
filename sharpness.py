@@ -35,21 +35,21 @@ class Sharpness(object):
     def clip_params(self, eps, params, new_params):
         for i in new_params:
             diff = new_params[i] - params[i]
-            eps_mtx = eps * (torch.abs(params[i]) + 1) # mtx for matrix... 
+            eps_mtx = eps * (torch.abs(params[i]) + 1) # mtx for matrix...
                                                 # (I forget it myself after a while)
             is_out_of_bound = False
             outer_up = torch.nonzero(diff>eps_mtx, as_tuple=True)
             if len(outer_up[0]) != 0:
                 is_out_of_bound = True
                 # outer_up = [tuple(temp) for temp in outer_up] # This is where memory leak happens
-                                                            # I did a few search and found there is 
+                                                            # I did a few search and found there is
                                                             # inherent problem when doing type
                                                             # recast between tensor and python list.
                                                             # (Also potentially tuple)
                                                             # See https://ptorch.com/news/161.html
 
                 # for _, j in enumerate(outer_up):          # This won't work as well
-                #     diff[tuple(j)] = eps_mtx[tuple(j)]    # Sharpness-training still gets slower 
+                #     diff[tuple(j)] = eps_mtx[tuple(j)]    # Sharpness-training still gets slower
                 diff[outer_up] = eps_mtx[outer_up]
 
             outer_low = torch.nonzero(diff<-eps_mtx, as_tuple=True)
@@ -115,7 +115,7 @@ class Sharpness(object):
 
                 new_outputs = net(inputs)
                 epoch_loss += self.loss(new_outputs, targets).item()
-                print('Batch Loss:', self.loss(new_outputs, targets).item(), flush=True)
+                # print('Batch Loss:', self.loss(new_outputs, targets).item(), flush=True)
             epoch_loss = epoch_loss / (batch_idx+1)
             max_value = max(max_value, epoch_loss)
             max_value_list.append(max_value)

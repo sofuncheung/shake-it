@@ -80,8 +80,8 @@ classes = ('plane', 'car', 'bird', 'cat', 'deer',
 # Model
 print('==> Building model..')
 # net = VGG('VGG19')
-# net = resnet.ResNet18()
-net = resnet.ResNet50()
+net = resnet.ResNet18()
+# net = resnet.ResNet50()
 # net = PreActResNet18()
 # net = GoogLeNet()
 # net = DenseNet121()
@@ -98,7 +98,7 @@ net = net.to(device)
 if device == 'cuda':
     net = torch.nn.DataParallel(net)
     cudnn.benchmark = True
-#summary(net, (3, 32, 32))
+summary(net, (3, 32, 32))
 #rescale(net, 'layer1', 1, 2)
 #sys.exit()
 if args.resume:
