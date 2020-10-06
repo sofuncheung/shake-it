@@ -147,9 +147,19 @@ class Sharpness(object):
                     (torch.abs(new_params[i]-params[i])-
                     (eps*(torch.abs(params[i])+1))) > num_eps
                     ) > 0:
+
+                where_out = torch.nonzero(
+                        (torch.abs(new_params[i]-params[i])-
+                    (eps*(torch.abs(params[i])+1))) > num_eps, as_tuple=True
+                )
+                print('Where difference go beyond box:')
+                print(torch.abs(new_params[i]-params[i])[where_out]
+                        )
+                print('Box limits:')
+                print((eps*(torch.abs(params[i])+1))[where_out])
+
                 return False
-            else:
-                return True
+        return True
 
     @staticmethod
     def _max_diff_minus_eps(eps, params, new_params):
