@@ -29,6 +29,9 @@ parser.add_argument('--resume', '-r', action='store_true',
                     help='resume from checkpoint')
 args = parser.parse_args()
 
+ONE_OFF = (config.sensitivity_one_off or
+        config.sharpness_one_off)
+
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 best_acc = 0  # best test accuracy
 start_epoch = 0  # start from epoch 0 or last checkpoint epoch
@@ -241,10 +244,14 @@ if __name__ == '__main__':
         if config.lr_decay:
             lr_scheduler.step()
 
-        if config.sensitivity_one_off == True:
+        if ONE_OFF == True:
             if train_returns[1] == 100.:
-                sensitivity_one_off = test(epoch, cal_sensitivity=True)[1]
-                print('The sensitivity at reaching zero training error is: ', sensitivity_one_off)
+                if config.sensitivity_one_off == True:
+                    sensitivity_one_off = test(epoch, cal_sensitivity=True)[1]
+                    print('The sensitivity at reaching zero training error is: ', sensitivity_one_off)
+                if config.sharpness_one_off == True:
+                    S = Sharpness(net, criterion, trainset, device)
+                    sharpness_one_off = S.sharpness()
                 break
     np.save(os.path.join(
         config.output_file_pth,'train_loss_acc_list.npy'), train_loss_acc_list)
