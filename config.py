@@ -4,11 +4,11 @@ import os
 
 class config(object):
     alpha = 1
-    optim = 'SGD'  # Options: SGD, SGD+Momentum, Adam
-    output_file_pth = '/mnt/zfsusers/sofuncheung/shake-it/playground/Sharpness'
+    optim = 'Adam'  # Options: SGD, SGD+Momentum, Adam
+    output_file_pth = '/mnt/zfsusers/sofuncheung/shake-it/playground/Sharpness/batch_size/BS-2000'
     lr_decay = False
     num_workers = 4
-    train_batch_size = 256
+    train_batch_size = 2000
     test_batch_size = 128
     sharpness = True
     sensitivity_cons = False # Recording input sensitivity for each epoch of training.
