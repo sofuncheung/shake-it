@@ -141,7 +141,7 @@ class Sharpness(object):
         return dic
 
     @staticmethod
-    def _test_clip_is_effective(eps, params, new_params, num_eps=5e-5):
+    def _test_clip_is_effective(eps, params, new_params, num_eps=1e-6):
         for i in new_params:
             if torch.max(
                     (torch.abs(new_params[i]-params[i])-
