@@ -24,7 +24,7 @@ class Sharpness(object):
         self.net = copy.deepcopy(net)
         self.loss = loss
         self.trainloader = torch.utils.data.DataLoader(
-                dataset, batch_size=config.train_batch_size,
+                dataset, batch_size=config.sharpness_train_batch_size,
                 shuffle=True, num_workers=config.num_workers)
         self.testloader = torch.utils.data.DataLoader(
                 dataset, batch_size=config.test_batch_size,
