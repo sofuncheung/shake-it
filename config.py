@@ -5,10 +5,10 @@ import os
 class config(object):
     alpha = 1
     optim = 'Adam'  # Options: SGD, SGD+Momentum, Adam
-    output_file_pth = '/mnt/zfsusers/sofuncheung/shake-it/playground/Sharpness/batch_size/BS-2000'
+    output_file_pth = '/mnt/zfsusers/sofuncheung/shake-it/playground/Sharpness/batch_size/BS-1000'
     lr_decay = False
     num_workers = 4
-    train_batch_size = 2000
+    train_batch_size = 1000
     test_batch_size = 128
     sharpness_train_batch_size = 256
     sharpness = True

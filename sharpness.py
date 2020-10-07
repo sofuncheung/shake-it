@@ -154,6 +154,7 @@ class Sharpness(object):
                 print('Where difference go beyond box:')
                 print(torch.abs(new_params[i]-params[i])[where_out]
                         )
+                print(torch.abs(new_params[i]-params[i])[where_out][0].dtype)
                 print('Box limits:')
                 print((eps*(torch.abs(params[i])+1))[where_out])
 
