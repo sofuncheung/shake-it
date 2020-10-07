@@ -217,8 +217,8 @@ if __name__ == '__main__':
     assert os.path.isdir(config.output_file_pth), "Target Output Directory Doesn't Exist!"
     train_loss_acc_list = []
     test_loss_acc_list = []
-    if config.sharpness == True:
-        sharpness = []
+    if config.sharpness_cons == True:
+        sharpness_cons = []
     if config.sensitivity_cons == True:
         sensitivity_cons = []
     for epoch in range(start_epoch, start_epoch+10000):
@@ -233,9 +233,9 @@ if __name__ == '__main__':
         train_loss_acc_list.append(train_returns)
         test_loss_acc_list.append(test_returns[0])
 
-        if config.sharpness == True:
+        if config.sharpness_cons == True:
             S = Sharpness(net, criterion, trainset, device)
-            sharpness.append(S.sharpness())
+            sharpness_cons.append(S.sharpness())
         if config.sensitivity_cons == True:
             sensitivity_cons.append(test_returns[1])
         if config.lr_decay:
@@ -250,9 +250,9 @@ if __name__ == '__main__':
         config.output_file_pth,'train_loss_acc_list.npy'), train_loss_acc_list)
     np.save(os.path.join(
         config.output_file_pth, 'test_loss_acc_list.npy'), test_loss_acc_list)
-    if config.sharpness == True:
+    if config.sharpness_cons == True:
         np.save(os.path.join(
-            config.output_file_pth, 'sharpness_list.npy'), sharpness)
+            config.output_file_pth, 'sharpness_list.npy'), sharpness_cons)
     if config.sensitivity_cons == True:
         np.save(os.path.join(
              config.output_file_pth, 'sensitivity_list.npy'), sensitivity_cons)
