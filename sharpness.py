@@ -55,7 +55,7 @@ class Sharpness(object):
             outer_low = torch.nonzero(diff<-eps_mtx, as_tuple=True)
             if len(outer_low[0]) != 0:
                 is_out_of_bound = True
-                diff[outer_low] = eps_mtx[outer_low]
+                diff[outer_low] = -eps_mtx[outer_low]
             new_params[i] = params[i] + diff
 
             del diff, eps_mtx, outer_up, outer_low
@@ -141,7 +141,7 @@ class Sharpness(object):
         return dic
 
     @staticmethod
-    def _test_clip_is_effective(eps, params, new_params, num_eps=1e-6):
+    def _test_clip_is_effective(eps, params, new_params, num_eps=5e-5):
         for i in new_params:
             if torch.max(
                     (torch.abs(new_params[i]-params[i])-
