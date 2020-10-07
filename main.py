@@ -224,7 +224,7 @@ if __name__ == '__main__':
         sharpness_cons = []
     if config.sensitivity_cons == True:
         sensitivity_cons = []
-    for epoch in range(start_epoch, start_epoch+10000):
+    for epoch in range(start_epoch, start_epoch+200):
         # if (epoch + 1) == 100:
         #     rescale(net, 'all', None, None, config.alpha)
         #     adjust_learning_rate(optimizer, args.lr)
@@ -244,15 +244,19 @@ if __name__ == '__main__':
         if config.lr_decay:
             lr_scheduler.step()
 
+        '''
         if ONE_OFF == True:
             if train_returns[1] == 100.:
-                if config.sensitivity_one_off == True:
-                    sensitivity_one_off = test(epoch, cal_sensitivity=True)[1]
-                    print('The sensitivity at reaching zero training error is: ', sensitivity_one_off)
-                if config.sharpness_one_off == True:
-                    S = Sharpness(net, criterion, trainset, device)
-                    sharpness_one_off = S.sharpness()
                 break
+        '''
+
+    if config.sensitivity_one_off == True:
+        sensitivity_one_off = test(epoch, cal_sensitivity=True)[1]
+        print('The sensitivity at reaching zero training error is: ', sensitivity_one_off)
+    if config.sharpness_one_off == True:
+        S = Sharpness(net, criterion, trainset, device)
+        sharpness_one_off = S.sharpness()
+
     np.save(os.path.join(
         config.output_file_pth,'train_loss_acc_list.npy'), train_loss_acc_list)
     np.save(os.path.join(
