@@ -14,11 +14,137 @@ import sys
 import time
 import numpy as np
 import matplotlib.pyplot as plt
+from PIL import Image
+
 
 import torch
+import torchvision
 import torch.nn as nn
 import torch.nn.init as init
+import torchvision.transforms as transforms
+from torch.utils.data import Dataset, DataLoader
 
+
+class BinaryCIFAR10(Dataset):
+    '''
+    Children class of torch.utils.data.Dataset
+    Specifically for binary CIFAR10 (car and cat)
+    dataset.
+    '''
+
+    def __init__(self, npy_file_x_train,
+            npy_file_y_train,
+            npy_file_x_test,
+            npy_file_y_test,
+            is_train=True, transform=None, target_transform=None):
+        self.x_train = np.load(npy_file_x_train)
+        self.y_train = np.load(npy_file_y_train)
+        self.x_test = np.load(npy_file_x_test)
+        self.y_test = np.load(npy_file_y_test)
+        self.transform = transform
+        self.target_transform = target_transform
+        self.is_train = is_train
+
+        if self.is_train:
+            self.data = self.x_train
+            self.target = self.y_train
+        else:
+            self.data = self.x_test
+            self.target = self.y_test
+
+    def __len__(self):
+        return len(self.data)
+
+    def __getitem__(self, index):
+        """
+        Args:
+            index (int): Index
+
+        Returns:
+            tuple: (image, target) where target is index of the target class.
+        """
+        img, target = self.data[index], self.targets[index]
+
+        # doing this so that it is consistent with all other datasets
+        # to return a PIL Image
+        img = Image.fromarray(img)
+
+        if self.transform is not None:
+            img = self.transform(img)
+
+        if self.target_transform is not None:
+            target = self.target_transform(target)
+
+        return img, target
+
+
+def load_data(train_batch_size,
+        test_batch_size,
+        num_workers,
+        dataset='CIFAR10', training_set_size=50000, binary=True):
+    print('==> Preparing data..')
+
+    if dataset == 'CIFAR10':
+        transform_train = transforms.Compose([
+            transforms.RandomCrop(32, padding=4),
+            transforms.RandomHorizontalFlip(),
+            transforms.ToTensor(),
+            # transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+            transforms.Normalize((0.4914, 0.4822, 0.4465), (0.247, 0.243, 0.261)),
+        ])
+
+        transform_test = transforms.Compose([
+            transforms.ToTensor(),
+            transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+        ])
+
+        if binary==False:
+            trainset = torchvision.datasets.CIFAR10(
+                root='~/shake-it/data', train=True, download=True, transform=transform_train)
+
+            testset = torchvision.datasets.CIFAR10(
+                root='~/shake-it/data', train=False, download=True, transform=transform_test)
+        else:
+            trainset = BinaryCIFAR10(
+                '~/cifar10/x_train_car_and_cat.npy',
+                '~/cifar10/y_train_car_and_cat.npy',
+                '~/cifar10/x_test_car_and_cat.npy',
+                '~/cifar10/y_test_car_and_cat.npy',
+                is_train=True, transform=transform_train)
+            testset = BinaryCIFAR10(
+                '~/cifar10/x_train_car_and_cat.npy',
+                '~/cifar10/y_train_car_and_cat.npy',
+                '~/cifar10/x_test_car_and_cat.npy',
+                '~/cifar10/y_test_car_and_cat.npy',
+                is_train=False, transform=transform_test)
+
+    if training_set_size == len(trainset):
+        trainloader = torch.utils.data.DataLoader(
+            trainset,
+            batch_size=train_batch_size,
+            shuffle=True,
+            num_workers=num_workers,
+            drop_last=True
+            )
+    else:
+        indices = list(range(len(trainset)))
+        np.random.shuffle(indices)
+        train_indices = indices[:training_set_size]
+        trainloader = torch.utils.data.DataLoader(
+            trainset,
+            batch_size=train_batch_size,
+            sampler=SubsetRandomSampler(train_indices),
+            shuffle=False,
+            num_workers=num_workers,
+            drop_last=True
+            )
+
+    testloader = torch.utils.data.DataLoader(
+        testset, batch_size=test_batch_size,
+        shuffle=False, num_workers=num_workers,
+        drop_last=True)
+
+    return trainset, trainloader, testset, testloader
 
 def get_mean_and_std(dataset):
     '''Compute the mean and std value of dataset.'''
@@ -34,7 +160,6 @@ def get_mean_and_std(dataset):
     mean.div_(len(dataset))
     std.div_(len(dataset))
     return mean, std
-
 
 def init_params(net):
     '''Init layer parameters.'''

@@ -6,8 +6,6 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.backends.cudnn as cudnn
 
-import torchvision
-import torchvision.transforms as transforms
 from torchsummary import summary
 from torch.utils.data.sampler import SubsetRandomSampler
 
@@ -15,11 +13,11 @@ import os
 import sys
 import argparse
 
+import utils
 from sensitivity import Sensitivity
 from model import resnet
 from rescale import rescale
 from config import config
-from utils import adjust_learning_rate
 from sharpness import Sharpness
 
 
@@ -37,52 +35,16 @@ best_acc = 0  # best test accuracy
 start_epoch = 0  # start from epoch 0 or last checkpoint epoch
 
 # Data
-print('==> Preparing data..')
-transform_train = transforms.Compose([
-    transforms.RandomCrop(32, padding=4),
-    transforms.RandomHorizontalFlip(),
-    transforms.ToTensor(),
-    # transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
-    transforms.Normalize((0.4914, 0.4822, 0.4465), (0.247, 0.243, 0.261)),
-])
+trainset, trainloader, testset, testloader = utils.load_data(
+        config.train_batch_size,
+        config.test_batch_size,
+        config.num_workers,
+        dataset='CIFAR10',
+        training_set_size=config.training_set_size,
+        binary=config.binary_dataset)
 
-transform_test = transforms.Compose([
-    transforms.ToTensor(),
-    transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
-])
-
-trainset = torchvision.datasets.CIFAR10(
-    root='~/shake-it/data', train=True, download=True, transform=transform_train)
-if config.training_set_size == len(trainset):
-    trainloader = torch.utils.data.DataLoader(
-        trainset,
-        batch_size=config.train_batch_size,
-        shuffle=True,
-        num_workers=config.num_workers,
-        drop_last=True
-        )
-else:
-    indices = list(range(len(trainset)))
-    np.random.shuffle(indices)
-    train_indices = indices[:config.training_set_size]
-    trainloader = torch.utils.data.DataLoader(
-        trainset,
-        batch_size=config.train_batch_size,
-        sampler=SubsetRandomSampler(train_indices),
-        shuffle=False,
-        num_workers=config.num_workers,
-        drop_last=True
-        )
-
-testset = torchvision.datasets.CIFAR10(
-    root='~/shake-it/data', train=False, download=True, transform=transform_test)
-testloader = torch.utils.data.DataLoader(
-    testset, batch_size=config.test_batch_size,
-    shuffle=False, num_workers=config.num_workers,
-    drop_last=True)
-
-classes = ('plane', 'car', 'bird', 'cat', 'deer',
-           'dog', 'frog', 'horse', 'ship', 'truck')
+# classes = ('plane', 'car', 'bird', 'cat', 'deer',
+#            'dog', 'frog', 'horse', 'ship', 'truck')
 
 # Model
 print('==> Building model..')
@@ -217,7 +179,7 @@ if __name__ == '__main__':
         sharpness_cons = []
     if config.sensitivity_cons == True:
         sensitivity_cons = []
-    for epoch in range(start_epoch, start_epoch+200):
+    for epoch in range(start_epoch, start_epoch+100):
         # if (epoch + 1) == 100:
         #     rescale(net, 'all', None, None, config.alpha)
         #     adjust_learning_rate(optimizer, args.lr)
