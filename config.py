@@ -15,5 +15,6 @@ class config(object):
     sharpness_one_off = True # Compute sharpness at last epoch.
     sensitivity_cons = False # Recording input sensitivity for each epoch of training.
     sensitivity_one_off = False # Compute input sensitivity at the end of traning.
-    binary_dataset = False # This needs to be "True" when calculating volume.
-    training_set_size = 50000
+
+    binary_dataset = True # This needs to be "True" when calculating volume.
+    training_set_size = 10000

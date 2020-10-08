@@ -106,16 +106,16 @@ def load_data(train_batch_size,
                 root='~/shake-it/data', train=False, download=True, transform=transform_test)
         else:
             trainset = BinaryCIFAR10(
-                '~/cifar10/x_train_car_and_cat.npy',
-                '~/cifar10/y_train_car_and_cat.npy',
-                '~/cifar10/x_test_car_and_cat.npy',
-                '~/cifar10/y_test_car_and_cat.npy',
+                '/mnt/zfsusers/sofuncheung/cifar10/x_train_car_and_cat.npy',
+                '/mnt/zfsusers/sofuncheung/cifar10/y_train_car_and_cat.npy',
+                '/mnt/zfsusers/sofuncheung/cifar10/x_test_car_and_cat.npy',
+                '/mnt/zfsusers/sofuncheung/cifar10/y_test_car_and_cat.npy',
                 is_train=True, transform=transform_train)
             testset = BinaryCIFAR10(
-                '~/cifar10/x_train_car_and_cat.npy',
-                '~/cifar10/y_train_car_and_cat.npy',
-                '~/cifar10/x_test_car_and_cat.npy',
-                '~/cifar10/y_test_car_and_cat.npy',
+                '/mnt/zfsusers/sofuncheung/cifar10/x_train_car_and_cat.npy',
+                '/mnt/zfsusers/sofuncheung/cifar10/y_train_car_and_cat.npy',
+                '/mnt/zfsusers/sofuncheung/cifar10/x_test_car_and_cat.npy',
+                '/mnt/zfsusers/sofuncheung/cifar10/y_test_car_and_cat.npy',
                 is_train=False, transform=transform_test)
 
     if training_set_size == len(trainset):
