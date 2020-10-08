@@ -178,7 +178,7 @@ if __name__ == '__main__':
         sharpness_cons = []
     if config.sensitivity_cons == True:
         sensitivity_cons = []
-    for epoch in range(start_epoch, start_epoch+100):
+    for epoch in range(start_epoch, start_epoch+20):
         # if (epoch + 1) == 100:
         #     rescale(net, 'all', None, None, config.alpha)
         #     adjust_learning_rate(optimizer, args.lr)
