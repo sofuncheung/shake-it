@@ -15,7 +15,7 @@ import os
 import sys
 import argparse
 
-from sensitivity import compute_jacobian_norm_sum
+from sensitivity import Sensitivity
 from model import resnet
 from rescale import rescale
 from config import config
@@ -163,20 +163,15 @@ def train(epoch):
     return (epoch_loss, 100.*epoch_acc)
 
 
-def test(epoch, cal_sensitivity=False):
+def test(epoch):
     global best_acc
     net.eval()
     test_loss = 0
     correct = 0
     total = 0
-    jacobian_norm_sum = 0
     for batch_idx, (inputs, targets) in enumerate(testloader):
         inputs, targets = inputs.to(device), targets.to(device)
-        if cal_sensitivity == True:
-            inputs.requires_grad = True
         outputs = net(inputs)
-        if cal_sensitivity == True:
-            jacobian_norm_sum += compute_jacobian_norm_sum(inputs, outputs)
         with torch.no_grad():
             loss = criterion(outputs, targets)
 
@@ -185,17 +180,11 @@ def test(epoch, cal_sensitivity=False):
             total += targets.size(0)
             correct += predicted.eq(targets).sum().item()
 
-            # progress_bar(
-            #     batch_idx, len(testloader), 'Loss: %.3f | Acc: %.3f%% (%d/%d)'
-            #     % (test_loss/(batch_idx+1),
-            #        100.*correct/total, correct, total))
             if (batch_idx+1) % 20 == 0:
                 print('Testing On Batch %03d' % (batch_idx+1))
     epoch_loss = test_loss/(batch_idx+1)
     epoch_acc = correct/total
     print('Loss: %.3f | Acc: %.3f%% (%d/%d)' % (epoch_loss, 100.*epoch_acc, correct, total))
-
-    epoch_sensitivity = float(jacobian_norm_sum / len(testset))
 
     # Save checkpoint.
     acc = 100.*correct/total
@@ -214,7 +203,7 @@ def test(epoch, cal_sensitivity=False):
             config.output_file_pth, 'checkpoint/ckpt.pth'))
         best_acc = acc
 
-    return ((epoch_loss, 100.*epoch_acc), epoch_sensitivity)
+    return (epoch_loss, 100.*epoch_acc)
 
 if __name__ == '__main__':
     assert os.path.isdir(config.output_file_pth), "Target Output Directory Doesn't Exist!"
@@ -229,18 +218,18 @@ if __name__ == '__main__':
         #     rescale(net, 'all', None, None, config.alpha)
         #     adjust_learning_rate(optimizer, args.lr)
         train_returns = train(epoch)
-        if config.sensitivity_cons == True:
-            test_returns = test(epoch, cal_sensitivity=True)
-        else:
-            test_returns = test(epoch, cal_sensitivity=False)
+        test_returns = test(epoch)
+
         train_loss_acc_list.append(train_returns)
-        test_loss_acc_list.append(test_returns[0])
+        test_loss_acc_list.append(test_returns)
 
         if config.sharpness_cons == True:
             S = Sharpness(net, criterion, trainset, device)
-            sharpness_cons.append(S.sharpness())
+            sharpness_cons.append(S.sharpness( ))
         if config.sensitivity_cons == True:
-            sensitivity_cons.append(test_returns[1])
+            Sen_train = Sensitivity(net, trainset, device, epoch)
+            # Sen_test = Sensitivity(net, testset, device, epoch)
+            sensitivity_cons.append(Sen_train.sensitivity())
         if config.lr_decay:
             lr_scheduler.step()
 
@@ -251,7 +240,8 @@ if __name__ == '__main__':
         '''
 
     if config.sensitivity_one_off == True:
-        sensitivity_one_off = test(epoch, cal_sensitivity=True)[1]
+        Sen_train = Sensitivity(net, trainset, device, epoch)
+        sensitivity_one_off = Sen_train.sensitivity()
         print('The sensitivity at reaching zero training error is: ', sensitivity_one_off)
     if config.sharpness_one_off == True:
         S = Sharpness(net, criterion, trainset, device)
