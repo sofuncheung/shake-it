@@ -37,10 +37,12 @@ class BinaryCIFAR10(Dataset):
             npy_file_x_test,
             npy_file_y_test,
             is_train=True, transform=None, target_transform=None):
-        self.x_train = torch.from_numpy(np.load(npy_file_x_train)).float()
-        self.y_train = torch.from_numpy(np.load(npy_file_y_train)).long()
-        self.x_test = torch.from_numpy(np.load(npy_file_x_test)).float()
-        self.y_test = torch.from_numpy(np.load(npy_file_y_test)).long()
+        self.x_train = np.load(npy_file_x_train)
+        self.y_train = self.turn_cifar_label_into_binary(
+                np.load(npy_file_y_train))
+        self.x_test = np.load(npy_file_x_test)
+        self.y_test = self.turn_cifar_label_into_binary(
+                np.load(npy_file_y_test))
         self.transform = transform
         self.target_transform = target_transform
         self.is_train = is_train
@@ -76,6 +78,18 @@ class BinaryCIFAR10(Dataset):
             target = self.target_transform(target)
 
         return img, target
+
+
+    @staticmethod
+    def turn_cifar_label_into_binary(y_train):
+        temp = []
+        for i in range(y_train.shape[0]):
+            if y_train[i][0] == 3:
+                temp.append(1)
+            elif y_train[i][0] == 1:
+                temp.append(0)
+        temp = np.array(temp).astype(np.int64)
+        return temp
 
 
 def load_data(train_batch_size,
