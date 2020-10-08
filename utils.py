@@ -37,20 +37,20 @@ class BinaryCIFAR10(Dataset):
             npy_file_x_test,
             npy_file_y_test,
             is_train=True, transform=None, target_transform=None):
-        self.x_train = np.load(npy_file_x_train)
-        self.y_train = np.load(npy_file_y_train)
-        self.x_test = np.load(npy_file_x_test)
-        self.y_test = np.load(npy_file_y_test)
+        self.x_train = torch.from_numpy(np.load(npy_file_x_train)).float()
+        self.y_train = torch.from_numpy(np.load(npy_file_y_train)).long()
+        self.x_test = torch.from_numpy(np.load(npy_file_x_test)).float()
+        self.y_test = torch.from_numpy(np.load(npy_file_y_test)).long()
         self.transform = transform
         self.target_transform = target_transform
         self.is_train = is_train
 
         if self.is_train:
             self.data = self.x_train
-            self.target = self.y_train
+            self.targets = self.y_train
         else:
             self.data = self.x_test
-            self.target = self.y_test
+            self.targets = self.y_test
 
     def __len__(self):
         return len(self.data)
