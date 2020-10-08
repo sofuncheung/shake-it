@@ -9,7 +9,7 @@ class config(object):
     lr_decay = False
     num_workers = 4
     train_batch_size = 1000
-    test_batch_size = 128
+    test_batch_size = 100
     sharpness_train_batch_size = 256
     sharpness_cons = False # Consecutive recording sharpness.
     sharpness_one_off = True # Compute sharpness at last epoch.

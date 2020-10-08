@@ -7,7 +7,6 @@ import torch.optim as optim
 import torch.backends.cudnn as cudnn
 
 from torchsummary import summary
-from torch.utils.data.sampler import SubsetRandomSampler
 
 import os
 import sys
