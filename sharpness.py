@@ -25,10 +25,12 @@ class Sharpness(object):
         self.loss = loss
         self.trainloader = torch.utils.data.DataLoader(
                 dataset, batch_size=config.sharpness_train_batch_size,
-                shuffle=True, num_workers=config.num_workers)
+                shuffle=True, num_workers=config.num_workers,
+                drop_last=True)
         self.testloader = torch.utils.data.DataLoader(
                 dataset, batch_size=config.test_batch_size,
-                shuffle=False, num_workers=config.num_workers)  # Note this is not on the text set.
+                shuffle=False, num_workers=config.num_workers,
+                drop_last=True)  # Note this is not on the text set.
         # self.optimizer = optim.SGD(net.parameters(), lr=1e-3) # Have to use vanilla SGD.
         self.device = device
 
@@ -77,6 +79,7 @@ class Sharpness(object):
                 loss = self.loss(outputs, targets)
                 L_w += loss.item()
             L_w = L_w/(batch_idx+1)
+        print('L_w: ', L_w)
         w = copy.deepcopy(net.state_dict())
         w = self.del_key_from_dic(w, 'num_batches_tracked')
         self.stop_tracking(w)
@@ -118,6 +121,7 @@ class Sharpness(object):
                 # print('Batch Loss:', self.loss(new_outputs, targets).item(), flush=True)
             epoch_loss = epoch_loss / (batch_idx+1)
             max_value = max(max_value, epoch_loss)
+            print('max_value: ', max_value)
             max_value_list.append(max_value)
         np.save(os.path.join(
             config.output_file_pth, 'max_value_list.npy'), max_value_list)

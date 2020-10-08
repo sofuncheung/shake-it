@@ -33,10 +33,12 @@ class Sensitivity(object):
         self.dataset = dataset
         # self.trainloader = torch.utils.data.DataLoader(
         #         dataset, batch_size=config.train_batch_size,
-        #         shuffle=True, num_workers=config.num_workers)
+        #         shuffle=True, num_workers=config.num_workers,
+        #         drop_last=True)
         self.testloader = torch.utils.data.DataLoader(
                 dataset, batch_size=config.test_batch_size,
-                shuffle=False, num_workers=config.num_workers)
+                shuffle=False, num_workers=config.num_workers,
+                drop_last=True)
         self.device = device
         self.epoch = epoch
 
