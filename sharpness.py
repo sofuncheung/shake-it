@@ -83,7 +83,9 @@ class Sharpness(object):
         max_value = 0
         max_value_list = []
         if opt_mtd == 'SGD':
-            optimizer = optim.SGD(net.parameters(), lr=1e-3)
+            optimizer = optim.SGD(net.parameters(), lr=5e-5)
+            # Here lr is set according to FCN sharpness_train_op. See
+            # /mnt/zfsusers/sofuncheung/cifar10/sharpness-generalization.py
         net.train()
         for sharpness_epoch in range(max_iter_epochs):
             epoch_loss = 0
