@@ -86,7 +86,7 @@ class Sharpness(object):
         max_value = 0
         max_value_list = []
         if opt_mtd == 'SGD':
-            optimizer = optim.SGD(net.parameters(), lr=1e-3)
+            optimizer = optim.SGD(net.parameters(), lr=1e-2)
             # Here lr should be large enough to make sure
             # we can find the maximum value. Don't worry
             # about the box limit. The box has been well
