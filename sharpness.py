@@ -30,7 +30,7 @@ class Sharpness(object):
         self.testloader = torch.utils.data.DataLoader(
                 dataset, batch_size=config.test_batch_size,
                 shuffle=False, num_workers=config.num_workers,
-                drop_last=True)  # Note this is not on the text set.
+                drop_last=True)  # Note this is not on the test set.
         # self.optimizer = optim.SGD(net.parameters(), lr=1e-3) # Have to use vanilla SGD.
         self.device = device
 
@@ -68,7 +68,7 @@ class Sharpness(object):
             '''
         return new_params
 
-    def sharpness(self, clip_eps=1e-3, max_iter_epochs=10, opt_mtd='SGD'):
+    def sharpness(self, clip_eps=1e-3, max_iter_epochs=100, opt_mtd='SGD'):
         net = self.net
         net.eval()
         L_w = 0
@@ -86,7 +86,7 @@ class Sharpness(object):
         max_value = 0
         max_value_list = []
         if opt_mtd == 'SGD':
-            optimizer = optim.SGD(net.parameters(), lr=1e-2)
+            optimizer = optim.SGD(net.parameters(), lr=1)
             # Here lr should be large enough to make sure
             # we can find the maximum value. Don't worry
             # about the box limit. The box has been well
