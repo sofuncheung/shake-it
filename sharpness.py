@@ -215,6 +215,9 @@ class Sharpness(object):
             print(params[i].shape)
 
 
+    @staticmethod
+    def _arrayify(X: Tensor) -> np.ndarray:
+
 
 if __name__ == '__main__':
     # print('CPUs:', os.cpu_count())
