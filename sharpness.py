@@ -14,6 +14,7 @@ import gc
 import os
 import numpy as np
 import copy
+from scipy.optimize import minimize
 
 from config import config
 
@@ -91,40 +92,43 @@ class Sharpness(object):
             # we can find the maximum value. Don't worry
             # about the box limit. The box has been well
             # defined by the clip_eps.
-        net.train()
-        for sharpness_epoch in range(max_iter_epochs):
-            epoch_loss = 0
-            for batch_idx, (inputs, targets) in enumerate(self.trainloader):
-                inputs, targets = inputs.to(self.device), targets.to(self.device)
-                optimizer.zero_grad()
-                outputs = net(inputs)
-                new_loss = -1. * self.loss(outputs, targets)
-                new_loss.backward()
-                optimizer.step()
+            net.train()
+            for sharpness_epoch in range(max_iter_epochs):
+                epoch_loss = 0
+                for batch_idx, (inputs, targets) in enumerate(self.trainloader):
+                    inputs, targets = inputs.to(self.device), targets.to(self.device)
+                    optimizer.zero_grad()
+                    outputs = net(inputs)
+                    new_loss = -1. * self.loss(outputs, targets)
+                    new_loss.backward()
+                    optimizer.step()
 
-                new_w = copy.deepcopy(net.state_dict())
-                self.stop_tracking(new_w)
-                new_w = self.del_key_from_dic(new_w, 'num_batches_tracked')
+                    new_w = copy.deepcopy(net.state_dict())
+                    self.stop_tracking(new_w)
+                    new_w = self.del_key_from_dic(new_w, 'num_batches_tracked')
 
-                new_w = self.clip_params(clip_eps, w, new_w)
-                # The above sentence might have caused the slowing down.
-                # A best place to start with narrowing down and debug.
+                    new_w = self.clip_params(clip_eps, w, new_w)
+                    # The above sentence might have caused the slowing down.
+                    # A best place to start with narrowing down and debug.
 
-                # assert self._test_clip_is_effective(
-                #        clip_eps, w, new_w), 'Error: Fail Box!!!'
+                    # assert self._test_clip_is_effective(
+                    #        clip_eps, w, new_w), 'Error: Fail Box!!!'
 
-                net.load_state_dict(new_w, strict=False)
-                #for value in net.state_dict().values():
-                #    print(value.requires_grad)
-                #sys.exit()
+                    net.load_state_dict(new_w, strict=False)
+                    #for value in net.state_dict().values():
+                    #    print(value.requires_grad)
+                    #sys.exit()
 
-                new_outputs = net(inputs)
-                epoch_loss += self.loss(new_outputs, targets).item()
-                print('Batch Loss:', self.loss(new_outputs, targets).item(), flush=True)
-            epoch_loss = epoch_loss / (batch_idx+1)
-            max_value = max(max_value, epoch_loss)
-            print('max_value: ', max_value)
-            max_value_list.append(max_value)
+                    new_outputs = net(inputs)
+                    epoch_loss += self.loss(new_outputs, targets).item()
+                    print('Batch Loss:', self.loss(new_outputs, targets).item(), flush=True)
+                epoch_loss = epoch_loss / (batch_idx+1)
+                max_value = max(max_value, epoch_loss)
+                print('max_value: ', max_value)
+                max_value_list.append(max_value)
+        elif opt_mtd == 'L-BFGS-B':
+
+
         np.save(os.path.join(
             config.output_file_pth, 'max_value_list.npy'), max_value_list)
         sharpness = 100 * (max_value - L_w) / (1 + L_w)
@@ -217,6 +221,7 @@ class Sharpness(object):
 
     @staticmethod
     def _arrayify(X: Tensor) -> np.ndarray:
+	return X.cpu().detach().contiguous().double().clone().numpy() 
 
 
 if __name__ == '__main__':
