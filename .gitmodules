@@ -1,0 +1,3 @@
+[submodule "l-bfgs-b-wrapper"]
+	path = l-bfgs-b-wrapper
+	url = git@gist.github.com:a9f912df362a85b37c730154ef3c294b.git
