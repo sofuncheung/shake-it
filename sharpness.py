@@ -63,7 +63,7 @@ class Sharpness(object):
                 shuffle=False, num_workers=config.num_workers,
                 drop_last=True)  # Note this is not on the test set.
         
-        self.full_batch_loader = torch.utils.data.Dataloader(
+        self.full_batch_loader = torch.utils.data.DataLoader(
             dataset, batch_size=len(dataset), shuffle=False,
             num_workers=config.num_workers
         )
@@ -133,7 +133,7 @@ class Sharpness(object):
                 ...
 
 
-    def sharpness(self, clip_eps=5e-3, max_iter_epochs=100, opt_mtd='SGD'):
+    def sharpness(self, clip_eps=5e-3, max_iter_epochs=100, opt_mtd='L-BFGS-B'):
         net = self.net
         net.eval()
         L_w = 0
@@ -298,8 +298,8 @@ class Sharpness(object):
 
 
     @staticmethod
-    def _arrayify(X: Tensor) -> np.ndarray:
-	return X.cpu().detach().contiguous().double().clone().numpy() 
+    def _arrayify(X):
+        return X.cpu().detach().contiguous().double().clone().numpy() 
 
 
 if __name__ == '__main__':
