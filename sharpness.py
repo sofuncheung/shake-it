@@ -27,6 +27,9 @@ def prepare_decorator(dataloader, loss):
     Return:
         A decorator.
 
+    Update:  This scenario is just not suitable to
+             use decorator.
+
     '''
     for batch_idx, (inputs, targets) in enumerate(dataloader):
         print('Initializing decorator...')
@@ -192,12 +195,18 @@ class Sharpness(object):
                 max_value_list.append(max_value)
 
         elif opt_mtd == 'L-BFGS-B':
-            
+            '''
+            Update:
+                This problem (changing one method of a given class 'instance')
+                is not suitable to be solved using decorator.
+                Because decorators decorate the 'conceptual' function or class,
+                not the instantiated version of them. That's also why we can use the
+                syntatic sugar @ before 'definition' of function or class.
+            '''
             @prepare_decorator(self.full_batch_loader,
                                self.loss)
             class Objective(net):
-                def __init__(self):
-                    super(Objective, self).__init__()
+                pass
 
             objective = Objective()
             obj = PyTorchObjective(objective)
