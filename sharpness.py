@@ -14,8 +14,9 @@ import gc
 import os
 import numpy as np
 import copy
-from scipy.optimize import minimize
+import scipy.optimize as optimize
 
+from utils import ScipyOptimizeWrapper
 from config import config
 
 
@@ -32,6 +33,10 @@ class Sharpness(object):
                 dataset, batch_size=config.test_batch_size,
                 shuffle=False, num_workers=config.num_workers,
                 drop_last=True)  # Note this is not on the test set.
+        self.full_batch_loader = torch.utils.data.DataLoader(
+                dataset, batch_size=len(dataset),shuffle=False,
+                num_workers=0
+                )
         # self.optimizer = optim.SGD(net.parameters(), lr=1e-3) # Have to use vanilla SGD.
         self.device = device
 
@@ -69,7 +74,7 @@ class Sharpness(object):
             '''
         return new_params
 
-    def sharpness(self, clip_eps=5e-3, max_iter_epochs=100, opt_mtd='SGD'):
+    def sharpness(self, clip_eps=5e-3, max_iter_epochs=100, opt_mtd='L-BFGS-B'):
         net = self.net
         net.eval()
         L_w = 0
@@ -127,7 +132,11 @@ class Sharpness(object):
                 print('max_value: ', max_value)
                 max_value_list.append(max_value)
         elif opt_mtd == 'L-BFGS-B':
-
+           scipy_obj = ScipyOptimizeWrapper(net, self.loss, self.full_batch_loader)
+           scipy_result = optimize.minimize(scipy_obj.f, scipy_obj.x0,
+                   jac=scipy_obj.jac, bounds=scipy_obj.bounds, options={'maxiter': 10}
+                   )
+           print('L-BFGS-B results:', scipy_result)
 
         np.save(os.path.join(
             config.output_file_pth, 'max_value_list.npy'), max_value_list)
@@ -220,8 +229,8 @@ class Sharpness(object):
 
 
     @staticmethod
-    def _arrayify(X: Tensor) -> np.ndarray:
-	return X.cpu().detach().contiguous().double().clone().numpy() 
+    def _arrayify(X):
+        return X.cpu().detach().contiguous().double().clone().numpy()
 
 
 if __name__ == '__main__':

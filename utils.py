@@ -13,6 +13,9 @@ import os
 import sys
 import time
 import numpy as np
+from scipy import optimize
+from collections import OrderedDict
+from functools import reduce
 import matplotlib.pyplot as plt
 from PIL import Image
 from torch.utils.data.sampler import SubsetRandomSampler
@@ -23,6 +26,99 @@ import torch.nn as nn
 import torch.nn.init as init
 import torchvision.transforms as transforms
 from torch.utils.data import Dataset, DataLoader
+
+
+class ScipyOptimizeWrapper(object):
+    r'''
+    Provide interface between Pytorch model (nn.Module)
+    and scipy optimizer (default L-BFGS-B)
+
+    In following context, "pack" means load numpy stuff
+    to Pytorch model; "unpack" means load Pytorch parameters
+    to numpy ndarray.
+    '''
+    def __init__(self, model, loss, full_batch_loader):
+        self.model = model
+        self.loss = loss
+        parameters = OrderedDict(model.named_parameters())
+        self.param_shapes = {n:parameters[n].size() for n in parameters}
+        self.x0 = np.concatenate([parameters[n].data.numpy().ravel()
+                                for n in parameters])
+        self.full_batch_loader = full_batch_loader
+
+    def pack_parameters(self, x):
+        r'''
+        Chopping up 1D numpy array x and pack them into Pytorch model
+        format (named_parameters).
+        '''
+        i = 0
+        named_parameters = OrderedDict()
+        for n in self.param_shapes:
+            param_len = reduce(lambda x,y: x*y, self.param_shapes[n])
+            # slice out a section of this length
+            param = x[i:i+param_len]
+            # reshape according to this size, and cast to torch
+            param = param.reshape(*self.param_shapes[n])
+            named_parameters[n] = torch.from_numpy(param)
+            # update index
+            i += param_len
+        return named_parameters
+
+    def unpack_grads(self):
+        r'''
+        Unpack all the gradients from the parameters in the module into a
+        numpy array.
+        '''
+        grads = []
+        for p in self.model.parameters():
+            grad = p.grad.data.numpy()
+            grads.append(grad.ravel())
+        return np.concatenate(grads)
+
+    def is_new(self, x):
+        # if this is the first thing we've seen
+        if not hasattr(self, 'cached_x'):
+            return True
+        else:
+            # compare x to cached_x to determine if we've been given a new input
+            x, self.cached_x = np.array(x), np.array(self.cached_x)
+            error = np.abs(x - self.cached_x)
+            return error.max() > 1e-8
+
+    def cache(self, x):
+        # load x into model
+        state_dict = self.pack_parameters(x)
+        self.model.load_state_dict(state_dict,strict=False)
+        # store the raw array as well
+        self.cached_x = x
+        # zero the gradient
+        self.model.zero_grad()
+        # use it to calculate the objective
+        for batch_idx, (inputs, targets) in enumerate(self.full_batch_loader):
+            outputs = self.model(inputs)
+            obj = -1 * self.loss(outputs, targets)
+        # backprop the objective
+        obj.backward()
+        self.cached_f = obj.item()
+        self.cached_jac = self.unpack_grads()
+
+    def f(self, x):
+        if self.is_new(x):
+            self.cache(x)
+        return self.cached_f
+
+    def jac(self, x):
+        if self.is_new(x):
+            self.cache(x)
+        return self.cached_jac
+
+    def bounds(self, eps):
+        bounds = []
+        lower_bounds = -eps * (np.abs(self.x0) + 1)
+        upper_bounds = eps * (np.abs(self.x0) + 1)
+        for i in range(len(lower_bounds)):
+            bounds.append((lower_bounds[i],upper_bounds[i]))
+        return bounds
 
 
 class BinaryCIFAR10(Dataset):
