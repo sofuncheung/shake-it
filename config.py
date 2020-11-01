@@ -6,14 +6,14 @@ class config(object):
     alpha = 1
     optim = 'Adam'  # Options: SGD, SGD+Momentum, Adam
     output_file_pth = ('/mnt/zfsusers/sofuncheung/shake-it'
-            '/playground/Sharpness/batch_size/BS-100/L-BFGS-B')
+            '/playground/Sharpness/batch_size/BS-100/L-BFGS-B/BS-300')
     lr_decay = False
     train_epoch = 100
 
 
     # Data loading
     num_workers = 4
-    train_batch_size = 100
+    train_batch_size = 300
     test_batch_size = 100
     sharpness_train_batch_size = 256
 
