@@ -132,12 +132,15 @@ class Sharpness(object):
                 print('max_value: ', max_value)
                 max_value_list.append(max_value)
         elif opt_mtd == 'L-BFGS-B':
-           scipy_obj = ScipyOptimizeWrapper(net, self.loss, self.full_batch_loader)
-           scipy_result = optimize.minimize(scipy_obj.f, scipy_obj.x0,
-                   jac=scipy_obj.jac, bounds=scipy_obj.bounds, options={'maxiter': 10}
+            scipy_obj = ScipyOptimizeWrapper(net, self.loss, self.full_batch_loader)
+            scipy_result = optimize.minimize(scipy_obj.f, scipy_obj.x0, method='L-BFGS-B',
+                   jac=scipy_obj.jac, bounds=scipy_obj.bounds(eps=clip_eps),
+                   options={'maxiter': 10}
                    )
-           print('L-BFGS-B results:', scipy_result)
-
+            print('f0: ', scipy_obj.f0)
+            print('L-BFGS-B results:\n', scipy_result)
+            print(type(scipy_result))
+            max_value = - scipy_result.fun
         np.save(os.path.join(
             config.output_file_pth, 'max_value_list.npy'), max_value_list)
         sharpness = 100 * (max_value - L_w) / (1 + L_w)

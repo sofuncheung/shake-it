@@ -42,9 +42,10 @@ class ScipyOptimizeWrapper(object):
         self.loss = loss
         parameters = OrderedDict(model.named_parameters())
         self.param_shapes = {n:parameters[n].size() for n in parameters}
-        self.x0 = np.concatenate([parameters[n].data.numpy().ravel()
+        self.x0 = np.concatenate([np.float64(parameters[n].data.numpy()).ravel()
                                 for n in parameters])
         self.full_batch_loader = full_batch_loader
+        self.f0 = self.f(self.x0)
 
     def pack_parameters(self, x):
         r'''
@@ -72,7 +73,7 @@ class ScipyOptimizeWrapper(object):
         grads = []
         for p in self.model.parameters():
             grad = p.grad.data.numpy()
-            grads.append(grad.ravel())
+            grads.append(np.float64(grad).ravel())
         return np.concatenate(grads)
 
     def is_new(self, x):
@@ -112,13 +113,13 @@ class ScipyOptimizeWrapper(object):
             self.cache(x)
         return self.cached_jac
 
-    def bounds(self, eps):
-        bounds = []
+    def bounds(self, eps=1e-3):
+        bounds_tuple_list = []
         lower_bounds = -eps * (np.abs(self.x0) + 1)
         upper_bounds = eps * (np.abs(self.x0) + 1)
         for i in range(len(lower_bounds)):
-            bounds.append((lower_bounds[i],upper_bounds[i]))
-        return bounds
+            bounds_tuple_list.append((lower_bounds[i],upper_bounds[i]))
+        return bounds_tuple_list
 
 
 class BinaryCIFAR10(Dataset):

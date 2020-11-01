@@ -14,14 +14,12 @@ class C1(nn.Module):
         super(C1, self).__init__()
         self.features = nn.Sequential(
             nn.Conv2d(3, 64, kernel_size=5, stride=2, padding=2),
-            nn.BatchNorm2d(64),
             nn.ReLU(inplace=True),
             nn.BatchNorm2d(64),
             nn.MaxPool2d(kernel_size=3, stride=2),
             nn.BatchNorm2d(64),
             # (N, channels, 7, 7)
             nn.Conv2d(64, 64, kernel_size=5, stride=2, padding=2),
-            nn.BatchNorm2d(64),
             nn.ReLU(inplace=True),
             nn.BatchNorm2d(64),
             # (4, 4)
@@ -33,12 +31,10 @@ class C1(nn.Module):
         self.classifier = nn.Sequential(
             nn.Dropout(),
             nn.Linear(64*2*2, 384),
-            nn.BatchNorm1d(384),
             nn.ReLU(inplace=True),
             nn.BatchNorm1d(384),
             nn.Dropout(),
             nn.Linear(384, 192),
-            nn.BatchNorm1d(192),
             nn.ReLU(inplace=True),
             nn.BatchNorm1d(192),
             nn.Linear(192, num_classes),
