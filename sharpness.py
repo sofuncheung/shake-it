@@ -138,7 +138,7 @@ class Sharpness(object):
             scipy_obj = ScipyOptimizeWrapper(net, self.loss, self.full_batch_loader)
             scipy_result = optimize.minimize(scipy_obj.f, scipy_obj.x0, method='L-BFGS-B',
                    jac=scipy_obj.jac, bounds=scipy_obj.bounds(eps=clip_eps),
-                   options={'maxiter': 10}
+                   options={'maxiter':10, 'iprint':1}
                    )
             print('f0: ', scipy_obj.f0)
             print('L-BFGS-B results:\n', scipy_result)
