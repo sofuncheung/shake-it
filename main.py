@@ -48,7 +48,10 @@ trainset, trainloader, testset, testloader = utils.load_data(
 # Model
 print('==> Building model..')
 # net = VGG('VGG19')
-net = resnet.ResNet18()
+if config.binary_dataset:
+    net = resnet.ResNet18(num_classes=2)
+else:
+    net = resnet.ResNet18()
 # net = resnet.ResNet50()
 # net = PreActResNet18()
 # net = GoogLeNet()
