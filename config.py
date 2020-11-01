@@ -6,14 +6,14 @@ class config(object):
     alpha = 1
     optim = 'Adam'  # Options: SGD, SGD+Momentum, Adam
     output_file_pth = ('/mnt/zfsusers/sofuncheung/shake-it'
-            '/playground/Sharpness/batch_size/BS-100/L-BFGS-B/BS-300')
+            '/playground/Sharpness/batch_size/BS-100/L-BFGS-B_5e-3/gtol_default/SGD/BS-1000')
     lr_decay = False
     train_epoch = 100
 
 
     # Data loading
     num_workers = 4
-    train_batch_size = 300
+    train_batch_size = 1000
     test_batch_size = 100
     sharpness_train_batch_size = 256
 
@@ -22,7 +22,7 @@ class config(object):
 
 
     # Sharpness & Sensitivity
-    sharpness_method = 'L-BFGS-B' # Option: 'SGD', 'L-BFGS-B'
+    sharpness_method = 'SGD' # Option: 'SGD', 'L-BFGS-B'
     sharpness_cons = False # Consecutive recording sharpness.
     sharpness_one_off = True # Compute sharpness at last epoch.
     sensitivity_cons = False # Recording input sensitivity for each epoch of training.

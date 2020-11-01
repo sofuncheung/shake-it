@@ -115,8 +115,8 @@ class ScipyOptimizeWrapper(object):
 
     def bounds(self, eps=1e-3):
         bounds_tuple_list = []
-        lower_bounds = -eps * (np.abs(self.x0) + 1)
-        upper_bounds = eps * (np.abs(self.x0) + 1)
+        lower_bounds = self.x0 - eps * (np.abs(self.x0) + 1)
+        upper_bounds = self.x0 + eps * (np.abs(self.x0) + 1)
         for i in range(len(lower_bounds)):
             bounds_tuple_list.append((lower_bounds[i],upper_bounds[i]))
         return bounds_tuple_list
