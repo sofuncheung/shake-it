@@ -74,7 +74,7 @@ class Sharpness(object):
             '''
         return new_params
 
-    def sharpness(self, clip_eps=5e-3, max_iter_epochs=100, opt_mtd='L-BFGS-B'):
+    def sharpness(self, clip_eps=5e-3, max_iter_epochs=100, opt_mtd='SGD'):
         net = self.net
         net.eval()
         L_w = 0

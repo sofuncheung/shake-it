@@ -195,7 +195,7 @@ if __name__ == '__main__':
 
         if config.sharpness_cons == True:
             S = Sharpness(net, criterion, trainset, device)
-            sharpness_cons.append(S.sharpness( ))
+            sharpness_cons.append(S.sharpness(opt_mtd=config.sharpness_method))
         if config.sensitivity_cons == True:
             Sen_train = Sensitivity(net, trainset, device, epoch)
             # Sen_test = Sensitivity(net, testset, device, epoch)
@@ -215,7 +215,7 @@ if __name__ == '__main__':
         print('The sensitivity at reaching zero training error is: ', sensitivity_one_off)
     if config.sharpness_one_off == True:
         S = Sharpness(net, criterion, trainset, device)
-        sharpness_one_off = S.sharpness()
+        sharpness_one_off = S.sharpness(opt_mtd=config.sharpness_method)
 
     np.save(os.path.join(
         config.output_file_pth,'train_loss_acc_list.npy'), train_loss_acc_list)

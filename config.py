@@ -22,6 +22,7 @@ class config(object):
 
 
     # Sharpness & Sensitivity
+    sharpness_method = 'L-BFGS-B' # Option: 'SGD', 'L-BFGS-B'
     sharpness_cons = False # Consecutive recording sharpness.
     sharpness_one_off = True # Compute sharpness at last epoch.
     sensitivity_cons = False # Recording input sensitivity for each epoch of training.
