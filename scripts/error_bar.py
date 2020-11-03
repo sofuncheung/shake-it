@@ -37,23 +37,67 @@ std_700 = np.std(bs_700)
 mean_900 = np.mean(bs_900)
 std_900 = np.std(bs_900)
 
-'''
-sgd_100 =
-sgd_300 =
-sgd_500 =
-sgd_700 =
-sgd_900 =
-'''
+sgd_100 = np.array([
+4.3302022239107405,
+4.998485304347297,
+8.226176006177342,
+6.098527293209973,
+5.812515714922763
+])
+sgd_300 =([
+16.830455178217917,
+10.066523182806693,
+5.758828205206326,
+5.367702184893953,
+9.508981881936537
+])
+sgd_500 = ([
+30.860339220312987,
+28.527861343769814,
+21.937608467658734,
+32.93660396231872,
+39.00890912333343
+])
+sgd_700 = ([
+43.57778790850022,
+53.24746537494388,
+42.79766362217168,
+40.31249835432027,
+59.97516484497951
+])
+sgd_900 = ([
+70.78653779119402,
+71.41533358724125,
+74.60602683603629,
+72.36607298106658,
+56.4773159017397
+])
+
+mean_100_sgd = np.mean(sgd_100)
+std_100_sgd = np.std(sgd_100)
+mean_300_sgd = np.mean(sgd_300)
+std_300_sgd = np.std(sgd_300)
+mean_500_sgd = np.mean(sgd_500)
+std_500_sgd = np.std(sgd_500)
+mean_700_sgd = np.mean(sgd_700)
+std_700_sgd = np.std(sgd_700)
+mean_900_sgd = np.mean(sgd_900)
+std_900_sgd = np.std(sgd_900)
+
 
 x = [100,300,500,700,900]
 y_lbfgsb = [mean_100,mean_300,mean_500,mean_700,mean_900]
 yerr_lbfgsb = [std_100,std_300,std_500,std_700,std_900]
+y_sgd = [mean_100_sgd,mean_300_sgd,mean_500_sgd,mean_700_sgd,mean_900_sgd]
+yerr_sgd = [std_100_sgd,std_300_sgd,std_500_sgd,std_700_sgd,std_900_sgd]
 
-plt.errorbar(x, y_lbfgsb, yerr=yerr_lbfgsb, marker='s',capsize=5)
+plt.errorbar(x, y_lbfgsb, yerr=yerr_lbfgsb, marker='s',capsize=5,label='L-BFGS-B 10 iters')
+plt.errorbar(x, y_sgd, yerr=yerr_sgd, marker='o', capsize=5, label='SGD 100 epochs')
 
 plt.xlabel('Batch Size', fontsize=20)
 plt.ylabel('Sharpness', fontsize=20)
 plt.grid(which='major')
+plt.legend()
 
 plt.savefig('sharpness-batch_size.png', dpi=300)
 
