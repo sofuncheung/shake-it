@@ -13,6 +13,7 @@ import sys
 import argparse
 
 import utils
+from utils import he_init
 from sensitivity import Sensitivity
 from model import resnet, keskar_models
 from rescale import rescale
@@ -49,11 +50,11 @@ trainset, trainloader, testset, testloader = utils.load_data(
 print('==> Building model..')
 # net = VGG('VGG19')
 if config.binary_dataset:
-    # net = resnet.ResNet18(num_classes=2)
-    net = keskar_models.C1(num_classes=2)
+    net = resnet.ResNet50(num_classes=2)
+    #net = keskar_models.C1(num_classes=2)
 else:
-    # net = resnet.ResNet18()
-    net = keskar_models.C1(num_classes=10)
+    net = resnet.ResNet50()
+    #net = keskar_models.C1(num_classes=10)
 # net = resnet.ResNet50()
 # net = PreActResNet18()
 # net = GoogLeNet()
@@ -67,6 +68,10 @@ else:
 # net = ShuffleNetV2(1)
 # net = EfficientNetB0()
 # net = RegNetX_200MF()
+
+# He-normal Initialization
+net.apply(he_init)
+
 net = net.to(device)
 if device == 'cuda':
     net = torch.nn.DataParallel(net)

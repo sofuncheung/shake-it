@@ -287,6 +287,19 @@ def init_params(net):
             if m.bias:
                 init.constant(m.bias, 0)
 
+def he_init(m):
+    r'''
+    He-normal initialization for GP volume calculation.
+    The function should be used in conjuction with 'net.apply'
+    '''
+    if isinstance(m, nn.Conv2d) or isinstance(m, nn.Linear):
+        init.kaiming_normal_(m.weight,
+                mode='fan_in', # GP only involves feed-forward process
+                nonlinearity='relu') # so gain = sqrt(2)
+        if (not (m.bias is None)):
+            init.normal_(m.bias, mean=0.0, std=1.0)
+
+
 if __name__ == '__main__':
     _, term_width = os.popen('stty size', 'r').read().split()
     term_width = int(term_width)
