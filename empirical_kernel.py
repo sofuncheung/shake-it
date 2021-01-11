@@ -3,12 +3,14 @@ import os,sys,time
 import gc
 
 from utils import *
+from model import resnet
 
-def empirical_K(model, data, number_samples,
+
+def empirical_K(model, data, number_samples, device,
         sigmaw=np.sqrt(2), sigmab=1.0, n_gpus=1,
         empirical_kernel_batch_size=256,
         truncated_init_dist=False,
-        store_partial_kernel=False,
+        store_partial_kernel=True,
         partial_kernel_n_proc=1,
         partial_kernel_index=0):
 
@@ -41,7 +43,10 @@ def empirical_K(model, data, number_samples,
     print("Doing task %d of %d" % (rank, size))
 
     m = len(data)
-    covs = np.zeros((m,m), dtype=np.float32)
+    if device == 'cuda':
+        covs = torch.zeros(m, m)
+    else:
+        covs = np.zeros((m,m), dtype=np.float32)
     local_index = 0
     update_chunk = 10000
     num_chunks = covs.shape[0]//update_chunk
@@ -61,7 +66,8 @@ def empirical_K(model, data, number_samples,
         # Also, Guillermo's 'reset_weights' will re-initialize weights and biases but keep
         # BatchNorm layer unchanged. While in Pytorch case the default initialization for 
         # BatchNorm is constant already.
-        
+        X = model_predict(model, data, empirical_kernel_batch_size, 4, device)
+        print('X.shape:', X.shape)
 
 
 
@@ -69,6 +75,18 @@ def empirical_K(model, data, number_samples,
 
 
 
+
+if __name__ == '__main__':
+    model = resnet.ResNet_pop_fc_50(num_classes=1) # Actually num_classes doesn't matter
+                                                   # because the fc layer was removed.
+    from main import trainset, device
+    empirical_K(model, trainset, 1, device,
+        sigmaw=np.sqrt(2), sigmab=1.0, n_gpus=1,
+        empirical_kernel_batch_size=256,
+        truncated_init_dist=False,
+        store_partial_kernel=True,
+        partial_kernel_n_proc=1,
+        partial_kernel_index=0)
 
 
 

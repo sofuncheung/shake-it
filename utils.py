@@ -310,6 +310,7 @@ def model_predict(model, data, batch_size, num_workers, device):
     for memory saving purpose.
     '''
 
+    model = model.to(device)
     loader = torch.utils.data.DataLoader(
         data,
         batch_size=batch_size,
