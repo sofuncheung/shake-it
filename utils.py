@@ -235,7 +235,8 @@ def load_data(train_batch_size,
             batch_size=train_batch_size,
             shuffle=True,
             num_workers=num_workers,
-            drop_last=True
+            #drop_last=True
+            drop_last=False
             )
     else:
         indices = list(range(len(trainset)))
@@ -247,13 +248,16 @@ def load_data(train_batch_size,
             sampler=SubsetRandomSampler(train_indices),
             shuffle=False,
             num_workers=num_workers,
-            drop_last=True
+            #drop_last=True
+            drop_last=False
             )
 
     testloader = torch.utils.data.DataLoader(
         testset, batch_size=test_batch_size,
         shuffle=False, num_workers=num_workers,
-        drop_last=True)
+        #drop_last=True
+        drop_last=False
+        )
 
     return trainset, trainloader, testset, testloader
 
