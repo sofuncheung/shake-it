@@ -50,8 +50,8 @@ trainset, trainloader, testset, testloader = utils.load_data(
 print('==> Building model..')
 # net = VGG('VGG19')
 if config.binary_dataset:
-    net = resnet.ResNet50(num_classes=2)
-    #net = keskar_models.C1(num_classes=2)
+    net = resnet.ResNet50(num_classes=1)
+    #net = keskar_models.C1(num_classes=1)
 else:
     net = resnet.ResNet50()
     #net = keskar_models.C1(num_classes=10)
@@ -92,7 +92,10 @@ if args.resume:
     best_acc = checkpoint['acc']
     start_epoch = checkpoint['epoch']
 
-criterion = nn.CrossEntropyLoss()
+if config.binary_dataset == True:
+    criterion = nn.BCEWithLogitsLoss() # sigmoid cross entropy
+else:
+    criterion = nn.CrossEntropyLoss()
 if config.optim == 'SGD+Momentum':
     optimizer = optim.SGD(net.parameters(), lr=args.lr,
             momentum=0.9, weight_decay=5e-4)
@@ -117,12 +120,18 @@ def train(epoch):
         inputs, targets = inputs.to(device), targets.to(device)
         optimizer.zero_grad()
         outputs = net(inputs)
+        if config.binary_dataset:
+            outputs.squeeze_(-1)
+            targets = targets.type_as(outputs)
         loss = criterion(outputs, targets)
         loss.backward()
         optimizer.step()
 
         train_loss += loss.item()
-        _, predicted = outputs.max(1)
+        if config.binary_dataset:
+            predicted = outputs > 0
+        else:
+            _, predicted = outputs.max(1)
         total += targets.size(0)
         correct += predicted.eq(targets).sum().item()
 
@@ -147,11 +156,17 @@ def test(epoch):
     for batch_idx, (inputs, targets) in enumerate(testloader):
         inputs, targets = inputs.to(device), targets.to(device)
         outputs = net(inputs)
+        if config.binary_dataset:
+            outputs.squeeze_(-1)
+            targets = targets.type_as(outputs)
         with torch.no_grad():
             loss = criterion(outputs, targets)
 
             test_loss += loss.item()
-            _, predicted = outputs.max(1)
+            if config.binary_dataset:
+                predicted = (outputs > 0)
+            else:
+                _, predicted = outputs.max(1)
             total += targets.size(0)
             correct += predicted.eq(targets).sum().item()
 
