@@ -82,6 +82,9 @@ class Sharpness(object):
             for batch_idx, (inputs, targets) in enumerate(self.testloader):
                 inputs, targets = inputs.to(self.device), targets.to(self.device)
                 outputs = net(inputs)
+                if config.binary_dataset:
+                    outputs.squeeze_(-1)
+                    targets = targets.type_as(outputs)
                 loss = self.loss(outputs, targets)
                 L_w += loss.item()
             L_w = L_w/(batch_idx+1)
@@ -104,6 +107,9 @@ class Sharpness(object):
                     inputs, targets = inputs.to(self.device), targets.to(self.device)
                     optimizer.zero_grad()
                     outputs = net(inputs)
+                    if config.binary_dataset:
+                        outputs.squeeze_(-1)
+                        targets = targets.type_as(outputs)
                     new_loss = -1. * self.loss(outputs, targets)
                     new_loss.backward()
                     optimizer.step()
@@ -125,6 +131,9 @@ class Sharpness(object):
                     #sys.exit()
 
                     new_outputs = net(inputs)
+                    if config.binary_dataset:
+                        new_outputs.squeeze_(-1)
+                        targets = targets.type_as(new_outputs)
                     epoch_loss += self.loss(new_outputs, targets).item()
                     print('Batch Loss:', self.loss(new_outputs, targets).item(), flush=True)
                 epoch_loss = epoch_loss / (batch_idx+1)

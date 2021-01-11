@@ -15,7 +15,7 @@ class config(object):
     num_workers = 4
     train_batch_size = 32
     test_batch_size = 100
-    sharpness_train_batch_size = 32
+    sharpness_train_batch_size = 128
 
     binary_dataset = True # This needs to be "True" when calculating volume.
     training_set_size = 10000
