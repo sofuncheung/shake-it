@@ -4,10 +4,11 @@ import os
 
 class config(object):
     alpha = 1
-    optim = 'SGD'  # Options: SGD, SGD+Momentum, Adam
+    optim = 'Adam'  # Options: SGD, SGD+Momentum, Adam
     output_file_pth = ('/mnt/zfsusers/sofuncheung/shake-it/playground/volume')
     lr_decay = False
-    train_epoch = 100
+    train_epoch = 100000
+    break_when_reaching_zero_error = True
 
 
     # Data loading
@@ -17,7 +18,7 @@ class config(object):
     sharpness_train_batch_size = 32
 
     binary_dataset = True # This needs to be "True" when calculating volume.
-    training_set_size = 500
+    training_set_size = 10000
 
 
     # Sharpness & Sensitivity

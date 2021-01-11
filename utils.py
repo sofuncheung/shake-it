@@ -300,6 +300,30 @@ def he_init(m):
             init.normal_(m.bias, mean=0.0, std=1.0)
 
 
+def model_predict(model, data, batch_size, num_workers, device):
+    r'''
+    Get the output of Pytorch model in a multi-batch fashion,
+    for memory saving purpose.
+    '''
+
+    loader = torch.utils.data.DataLoader(
+        data,
+        batch_size=batch_size,
+        shuffle=False,
+        num_workers=num_workers,
+        drop_last=False
+        )
+    outputs_list = []
+    for batch_idx, (inputs, targets) in enumerate(loader):
+        inputs = inputs.to(device)
+        with torch.no_grad():
+            outputs = model(inputs)
+            outputs_list.append(outputs)
+
+    return torch.cat(outputs_list, axis=0)
+
+
+
 if __name__ == '__main__':
     _, term_width = os.popen('stty size', 'r').read().split()
     term_width = int(term_width)
