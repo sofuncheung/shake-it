@@ -5,6 +5,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import torch.backends.cudnn as cudnn
+#import importlib.util
 
 from torchsummary import summary
 
@@ -17,7 +18,6 @@ from utils import he_init
 from sensitivity import Sensitivity
 from model import resnet, keskar_models
 from rescale import rescale
-from config import config
 from sharpness import Sharpness
 
 
@@ -25,7 +25,16 @@ parser = argparse.ArgumentParser(description='PyTorch CIFAR10 Training')
 parser.add_argument('--lr', default=0.01, type=float, help='learning rate')
 parser.add_argument('--resume', '-r', action='store_true',
                     help='resume from checkpoint')
+parser.add_argument('--path', '-p', # config.py path
+        default='/mnt/zfsusers/sofuncheung/shake-it/playground',
+        type=str, help='config.py path')
+
 args = parser.parse_args()
+
+# Load config by adding sys path
+sys.path.append(args.path)
+from config import config
+
 
 ONE_OFF = (config.sensitivity_one_off or
         config.sharpness_one_off)
@@ -215,10 +224,20 @@ if __name__ == '__main__':
         test_loss_acc_list.append(test_returns)
 
         if config.sharpness_cons == True:
-            S = Sharpness(net, criterion, trainset, device)
+            S = Sharpness(net, criterion,
+                    trainset, device,
+                    config.sharpness_train_batch_size,
+                    config.num_workers,
+                    config.test_batch_size,
+                    config.binary_dataset,
+                    config.output_file_pth
+                    )
             sharpness_cons.append(S.sharpness(opt_mtd=config.sharpness_method))
         if config.sensitivity_cons == True:
-            Sen_train = Sensitivity(net, trainset, device, epoch)
+            Sen_train = Sensitivity(net, trainset, device, epoch,
+                    config.test_batch_size,
+                    config.num_workers
+                    )
             # Sen_test = Sensitivity(net, testset, device, epoch)
             sensitivity_cons.append(Sen_train.sensitivity())
         if config.lr_decay:
@@ -235,11 +254,21 @@ if __name__ == '__main__':
         '''
 
     if config.sensitivity_one_off == True:
-        Sen_train = Sensitivity(net, trainset, device, epoch)
+        Sen_train = Sensitivity(net, trainset, device, epoch,
+                config.test_batch_size,
+                config.num_workers
+                )
         sensitivity_one_off = Sen_train.sensitivity()
         print('The sensitivity one_off:', sensitivity_one_off)
     if config.sharpness_one_off == True:
-        S = Sharpness(net, criterion, trainset, device)
+        S = Sharpness(net, criterion,
+                trainset, device,
+                config.sharpness_train_batch_size,
+                config.num_workers,
+                config.test_batch_size,
+                config.binary_dataset,
+                config.output_file_pth
+                )
         sharpness_one_off = S.sharpness(opt_mtd=config.sharpness_method)
         print('The sharpness one_off:', sharpness_one_off)
 

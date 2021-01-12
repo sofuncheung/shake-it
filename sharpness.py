@@ -17,21 +17,25 @@ import copy
 import scipy.optimize as optimize
 
 from utils import ScipyOptimizeWrapper
-from config import config
 
 
 class Sharpness(object):
 
-    def __init__(self, net, loss, dataset, device):
+    def __init__(self, net, loss, dataset,
+            device, sharpness_train_batch_size,
+            num_workers, test_batch_size,
+            binary_dataset,
+            output_file_pth
+            ):
         self.net = copy.deepcopy(net)
         self.loss = loss
         self.trainloader = torch.utils.data.DataLoader(
-                dataset, batch_size=config.sharpness_train_batch_size,
-                shuffle=True, num_workers=config.num_workers,
+                dataset, batch_size=sharpness_train_batch_size,
+                shuffle=True, num_workers=num_workers,
                 drop_last=True)
         self.testloader = torch.utils.data.DataLoader(
-                dataset, batch_size=config.test_batch_size,
-                shuffle=False, num_workers=config.num_workers,
+                dataset, batch_size=test_batch_size,
+                shuffle=False, num_workers=num_workers,
                 drop_last=True)  # Note this is not on the test set.
         self.full_batch_loader = torch.utils.data.DataLoader(
                 dataset, batch_size=len(dataset),shuffle=False,
@@ -39,6 +43,8 @@ class Sharpness(object):
                 )
         # self.optimizer = optim.SGD(net.parameters(), lr=1e-3) # Have to use vanilla SGD.
         self.device = device
+        self.binary_dataset = binary_dataset
+        self.output_file_pth = output_file_pth
 
     def clip_params(self, eps, params, new_params):
         for i in new_params:
@@ -82,7 +88,7 @@ class Sharpness(object):
             for batch_idx, (inputs, targets) in enumerate(self.testloader):
                 inputs, targets = inputs.to(self.device), targets.to(self.device)
                 outputs = net(inputs)
-                if config.binary_dataset:
+                if self.binary_dataset:
                     outputs.squeeze_(-1)
                     targets = targets.type_as(outputs)
                 loss = self.loss(outputs, targets)
@@ -107,7 +113,7 @@ class Sharpness(object):
                     inputs, targets = inputs.to(self.device), targets.to(self.device)
                     optimizer.zero_grad()
                     outputs = net(inputs)
-                    if config.binary_dataset:
+                    if self.binary_dataset:
                         outputs.squeeze_(-1)
                         targets = targets.type_as(outputs)
                     new_loss = -1. * self.loss(outputs, targets)
@@ -131,7 +137,7 @@ class Sharpness(object):
                     #sys.exit()
 
                     new_outputs = net(inputs)
-                    if config.binary_dataset:
+                    if self.binary_dataset:
                         new_outputs.squeeze_(-1)
                         targets = targets.type_as(new_outputs)
                     epoch_loss += self.loss(new_outputs, targets).item()
@@ -141,7 +147,7 @@ class Sharpness(object):
                 # print('max_value: ', max_value)
                 max_value_list.append(max_value)
             np.save(os.path.join(
-                config.output_file_pth, 'max_value_list.npy'), max_value_list)
+                self.output_file_pth, 'max_value_list.npy'), max_value_list)
             sharpness = 100 * (max_value - L_w) / (1 + L_w)
         elif opt_mtd == 'L-BFGS-B':
             scipy_obj = ScipyOptimizeWrapper(net, self.loss, self.full_batch_loader)
@@ -154,7 +160,7 @@ class Sharpness(object):
             print(type(scipy_result))
             max_value = - scipy_result.fun
             sharpness = 100 * (scipy_obj.f0 - scipy_result.fun) / 1 - (scipy_obj.f0)
-        print('Sharpness:', sharpness)
+        # print('Sharpness:', sharpness)
         return sharpness
 
 

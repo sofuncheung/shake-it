@@ -12,7 +12,6 @@ import numpy as np
 import copy
 from torch.autograd.gradcheck import zero_gradients
 
-from config import config
 
 
 class Sensitivity(object):
@@ -28,7 +27,10 @@ class Sensitivity(object):
     an empirical study." arXiv preprint arXiv:1802.08760 (2018).
     '''
 
-    def __init__(self, net, dataset, device, epoch):
+    def __init__(self, net, dataset, device, epoch,
+            test_batch_size,
+            num_workers
+            ):
         self.net = copy.deepcopy(net)
         self.dataset = dataset
         # self.trainloader = torch.utils.data.DataLoader(
@@ -36,8 +38,8 @@ class Sensitivity(object):
         #         shuffle=True, num_workers=config.num_workers,
         #         drop_last=True)
         self.testloader = torch.utils.data.DataLoader(
-                dataset, batch_size=config.test_batch_size,
-                shuffle=False, num_workers=config.num_workers,
+                dataset, batch_size=test_batch_size,
+                shuffle=False, num_workers=num_workers,
                 drop_last=True)
         self.device = device
         self.epoch = epoch
