@@ -327,6 +327,22 @@ def model_predict(model, data, batch_size, num_workers, device):
 
     return torch.cat(outputs_list, axis=0)
 
+def get_xs_ys_from_dataset(dataset, batch_size, num_workers):
+    loader = torch.utils.data.DataLoader(
+        dataset,
+        batch_size=batch_size,
+        shuffle=False,
+        num_workers=num_workers,
+        drop_last=False
+        )
+    xs = []
+    ys = []
+    for batch_idx, (inputs, targets) in enumerate(loader):
+        xs.append(inputs)
+        ys.append(targets)
+    xs = torch.cat(xs, axis=0)
+    ys = torch.cat(ys, axis=0)
+    return (xs,ys)
 
 
 if __name__ == '__main__':

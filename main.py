@@ -19,6 +19,8 @@ from sensitivity import Sensitivity
 from model import resnet, keskar_models
 from rescale import rescale
 from sharpness import Sharpness
+from GP_prob.GP_prob_gpy import GP_prob
+from empirical_kernel import empirical_K
 
 
 parser = argparse.ArgumentParser(description='PyTorch CIFAR10 Training')
@@ -28,6 +30,7 @@ parser.add_argument('--resume', '-r', action='store_true',
 parser.add_argument('--path', '-p', # config.py path
         default='/mnt/zfsusers/sofuncheung/shake-it/playground',
         type=str, help='config.py path')
+parser.add_argument('--sample', '-s', default=1, type=int, help='sample number')
 
 args = parser.parse_args()
 
@@ -92,11 +95,11 @@ if args.resume:
     # Load checkpoint.
     print('==> Resuming from checkpoint..')
     assert os.path.isdir(
-            os.path.join(config.output_file_pth, 'checkpoint')
+            os.path.join(args.path, 'checkpoint_%d'%args.sample)
             ), 'Error: no checkpoint directory found!'
     checkpoint = torch.load(
             os.path.join(
-                config.output_file_pth, 'checkpoint/ckpt.pth'))
+                args.path, 'checkpoint_%d/ckpt.pth'%args.sample))
     net.load_state_dict(checkpoint['net'])
     best_acc = checkpoint['acc']
     start_epoch = checkpoint['epoch']
@@ -195,17 +198,17 @@ def test(epoch):
             'epoch': epoch,
         }
         if not os.path.isdir(
-                os.path.join(config.output_file_pth, 'checkpoint')):
+                os.path.join(args.path, 'checkpoint_%d'%args.sample)):
             os.mkdir(
-                    os.path.join(config.output_file_pth, 'checkpoint'))
+                    os.path.join(args.path, 'checkpoint%d'%args.sample))
         torch.save(state, os.path.join(
-            config.output_file_pth, 'checkpoint/ckpt.pth'))
+            args.path, 'checkpoint_%d/ckpt.pth'%args.sample))
         best_acc = acc
 
     return (epoch_loss, 100.*epoch_acc)
 
 if __name__ == '__main__':
-    assert os.path.isdir(config.output_file_pth), "Target Output Directory Doesn't Exist!"
+    assert os.path.isdir(args.path), "Target Output Directory Doesn't Exist!"
     train_loss_acc_list = []
     test_loss_acc_list = []
     if config.sharpness_cons == True:
@@ -230,7 +233,8 @@ if __name__ == '__main__':
                     config.num_workers,
                     config.test_batch_size,
                     config.binary_dataset,
-                    config.output_file_pth
+                    args.path,
+                    args.sample
                     )
             sharpness_cons.append(S.sharpness(opt_mtd=config.sharpness_method))
         if config.sensitivity_cons == True:
@@ -267,19 +271,54 @@ if __name__ == '__main__':
                 config.num_workers,
                 config.test_batch_size,
                 config.binary_dataset,
-                config.output_file_pth
+                args.path,
+                args.sample
                 )
         sharpness_one_off = S.sharpness(opt_mtd=config.sharpness_method)
         print('The sharpness one_off:', sharpness_one_off)
 
     np.save(os.path.join(
-        config.output_file_pth,'train_loss_acc_list.npy'), train_loss_acc_list)
+        args.path,'train_loss_acc_list_%d.npy'%args.sample), train_loss_acc_list)
     np.save(os.path.join(
-        config.output_file_pth, 'test_loss_acc_list.npy'), test_loss_acc_list)
+        args.path, 'test_loss_acc_list_%d.npy'%args.sample), test_loss_acc_list)
     if config.sharpness_cons == True:
         np.save(os.path.join(
-            config.output_file_pth, 'sharpness_list.npy'), sharpness_cons)
+            args.path, 'sharpness_list_%d.npy'%args.sample), sharpness_cons)
     if config.sensitivity_cons == True:
         np.save(os.path.join(
-             config.output_file_pth, 'sensitivity_list.npy'), sensitivity_cons)
+             args.path, 'sensitivity_list_%d.npy'%args.sample), sensitivity_cons)
 
+    if config.volume_one_off == True:
+        data_train_plus_test = torch.cat(trainset, testset)
+        if os.path.isfile(os.path.join(
+            args.path, 'empirical_K.npy')
+                ):
+            print('Using Existing Kernel:')
+            K = np.load(os.path.join(
+                args.path, 'empirical_K.npy'))
+        else:
+            model = resnet.ResNet_pop_fc_50(num_classes=1)
+            print('Calculating Empirical Kernel:')
+            K = empirical_K(model, data_train_plus_test,
+                    0.1*len(data_train_plus_test), device, # Use fc-poped model
+                    sigmaw=np.sqrt(2), sigmab=1.0, n_gpus=1,
+                    empirical_kernel_batch_size=256,
+                    truncated_init_dist=False,
+                    store_partial_kernel=False,
+                    partial_kernel_n_proc=1,
+                    partial_kernel_index=0)
+            np.save(os.path.join(
+                args.path, 'empirical_K.npy'), K)
+        (xs, ys) = get_xs_ys_from_dataset(data_train_plus_test, 256, 4)
+        logPU = GP_prob(K,xs,ys)
+        log_10PU = logPU * np.log10(np.e)
+
+    if config.record == True:
+        generalization = test_loss_acc_list[-1][1] # last test accuracy
+        g_sh_se_v = list(generalization,
+                np.log10(sharpness_one_off),
+                np.log10(sensitivity_one_off),
+                log_10PU
+                )
+        np.save(os.path.join(
+            args.path, 'g_sh_se_v_%d.npy'%args.sample), g_sh_se_v)

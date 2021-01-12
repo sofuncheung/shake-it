@@ -25,7 +25,8 @@ class Sharpness(object):
             device, sharpness_train_batch_size,
             num_workers, test_batch_size,
             binary_dataset,
-            output_file_pth
+            output_file_pth,
+            sample
             ):
         self.net = copy.deepcopy(net)
         self.loss = loss
@@ -45,6 +46,7 @@ class Sharpness(object):
         self.device = device
         self.binary_dataset = binary_dataset
         self.output_file_pth = output_file_pth
+        self.sample = sample
 
     def clip_params(self, eps, params, new_params):
         for i in new_params:
@@ -147,7 +149,7 @@ class Sharpness(object):
                 # print('max_value: ', max_value)
                 max_value_list.append(max_value)
             np.save(os.path.join(
-                self.output_file_pth, 'max_value_list.npy'), max_value_list)
+                self.output_file_pth, 'max_value_list_%d.npy'%self.sample), max_value_list)
             sharpness = 100 * (max_value - L_w) / (1 + L_w)
         elif opt_mtd == 'L-BFGS-B':
             scipy_obj = ScipyOptimizeWrapper(net, self.loss, self.full_batch_loader)

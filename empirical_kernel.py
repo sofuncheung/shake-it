@@ -52,7 +52,7 @@ def empirical_K(model, data, number_samples, device,
     else:
         covs = np.zeros((m,m), dtype=np.float32)
     local_index = 0
-    update_chunk = 10000
+    update_chunk = 20000 # Guillermo use 10000
     num_chunks = covs.shape[0]//update_chunk
     print("num_chunks",num_chunks)
 
