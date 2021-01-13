@@ -14,7 +14,7 @@ import sys
 import argparse
 
 import utils
-from utils import he_init
+from utils import *
 from sensitivity import Sensitivity
 from model import resnet, keskar_models
 from rescale import rescale
@@ -47,12 +47,12 @@ best_acc = 0  # best test accuracy
 start_epoch = 0  # start from epoch 0 or last checkpoint epoch
 
 # Data
-trainset, trainloader, testset, testloader = utils.load_data(
+trainloader,testset,testloader,trainset_genuine = utils.load_data(
         config.train_batch_size,
         config.test_batch_size,
         config.num_workers,
         dataset='CIFAR10',
-        training_set_size=config.training_set_size,
+        attack_set_size=config.attack_set_size,
         binary=config.binary_dataset)
 
 # classes = ('plane', 'car', 'bird', 'cat', 'deer',
@@ -135,27 +135,30 @@ def train(epoch):
         if config.binary_dataset:
             outputs.squeeze_(-1)
             targets = targets.type_as(outputs)
-        loss = criterion(outputs, targets)
+        loss = criterion(outputs, targets) # Here loss is genuine/attack mixed loss 
         loss.backward()
         optimizer.step()
-
         train_loss += loss.item()
+        '''
         if config.binary_dataset:
             predicted = outputs > 0
         else:
             _, predicted = outputs.max(1)
         total += targets.size(0)
         correct += predicted.eq(targets).sum().item()
-
+        '''
         #progress_bar(
         #    batch_idx, len(trainloader), 'Loss: %.3f | Acc: %.3f%% (%d/%d)'
         #    % (train_loss/(batch_idx+1), 100.*correct/total, correct, total))
         # Above is when using terminal. Now I would like to run it on computing cores.
         if (batch_idx+1) % 50 == 0:
             print('Training On Batch %03d' % (batch_idx+1))
+
     epoch_loss = train_loss/(batch_idx+1)
-    epoch_acc = correct/total
-    print('Loss: %.3f | Acc: %.3f%% (%d/%d)' % (epoch_loss, 100.*epoch_acc, correct, total))
+    epoch_acc, correct, total = dataset_accuracy(net, trainset_genuine,
+            device, config.binary_dataset)  #acc=correct/total. acc measured on train_genuine 
+    print('(Tainted) Loss: %.3f | Acc: %.3f%% (%d/%d)' % (
+        epoch_loss, 100.*epoch_acc, correct, total))
     return (epoch_loss, 100.*epoch_acc)
 
 
@@ -200,7 +203,7 @@ def test(epoch):
         if not os.path.isdir(
                 os.path.join(args.path, 'checkpoint_%d'%args.sample)):
             os.mkdir(
-                    os.path.join(args.path, 'checkpoint%d'%args.sample))
+                    os.path.join(args.path, 'checkpoint_%d'%args.sample))
         torch.save(state, os.path.join(
             args.path, 'checkpoint_%d/ckpt.pth'%args.sample))
         best_acc = acc
@@ -228,7 +231,7 @@ if __name__ == '__main__':
 
         if config.sharpness_cons == True:
             S = Sharpness(net, criterion,
-                    trainset, device,
+                    trainset_genuine, device,
                     config.sharpness_train_batch_size,
                     config.num_workers,
                     config.test_batch_size,
@@ -238,7 +241,7 @@ if __name__ == '__main__':
                     )
             sharpness_cons.append(S.sharpness(opt_mtd=config.sharpness_method))
         if config.sensitivity_cons == True:
-            Sen_train = Sensitivity(net, trainset, device, epoch,
+            Sen_train = Sensitivity(net, trainset_genuine, device, epoch,
                     config.test_batch_size,
                     config.num_workers
                     )
@@ -258,15 +261,15 @@ if __name__ == '__main__':
         '''
 
     if config.sensitivity_one_off == True:
-        Sen_train = Sensitivity(net, trainset, device, epoch,
+        Sen_train = Sensitivity(net, trainset_genuine, device, epoch,
                 config.test_batch_size,
                 config.num_workers
                 )
         sensitivity_one_off = Sen_train.sensitivity()
-        print('The sensitivity one_off:', sensitivity_one_off)
+        print('The sensitivity one_off (log10):', np.log10(sensitivity_one_off))
     if config.sharpness_one_off == True:
         S = Sharpness(net, criterion,
-                trainset, device,
+                trainset_genuine, device,
                 config.sharpness_train_batch_size,
                 config.num_workers,
                 config.test_batch_size,
@@ -275,7 +278,7 @@ if __name__ == '__main__':
                 args.sample
                 )
         sharpness_one_off = S.sharpness(opt_mtd=config.sharpness_method)
-        print('The sharpness one_off:', sharpness_one_off)
+        print('The sharpness one_off (log10):', np.log10(sharpness_one_off))
 
     np.save(os.path.join(
         args.path,'train_loss_acc_list_%d.npy'%args.sample), train_loss_acc_list)
@@ -289,7 +292,7 @@ if __name__ == '__main__':
              args.path, 'sensitivity_list_%d.npy'%args.sample), sensitivity_cons)
 
     if config.volume_one_off == True:
-        data_train_plus_test = torch.cat(trainset, testset)
+        data_train_plus_test = torch.utils.data.ConcatDataset((trainset_genuine, testset))
         if os.path.isfile(os.path.join(
             args.path, 'empirical_K.npy')
                 ):
@@ -300,6 +303,7 @@ if __name__ == '__main__':
             model = resnet.ResNet_pop_fc_50(num_classes=1)
             print('Calculating Empirical Kernel:')
             K = empirical_K(model, data_train_plus_test,
+                    #1,device,
                     0.1*len(data_train_plus_test), device, # Use fc-poped model
                     sigmaw=np.sqrt(2), sigmab=1.0, n_gpus=1,
                     empirical_kernel_batch_size=256,
@@ -308,17 +312,24 @@ if __name__ == '__main__':
                     partial_kernel_n_proc=1,
                     partial_kernel_index=0)
             np.save(os.path.join(
-                args.path, 'empirical_K.npy'), K)
-        (xs, ys) = get_xs_ys_from_dataset(data_train_plus_test, 256, 4)
-        logPU = GP_prob(K,xs,ys)
+                args.path, 'empirical_K.npy'), K.cpu())
+        (xs, _) = get_xs_ys_from_dataset(data_train_plus_test, 256, config.num_workers)
+        ys = (model_predict(
+                net, data_train_plus_test, 256, config.num_workers, device
+                ) > 0)
+        logPU = GP_prob(np.array(K.cpu()),np.array(xs),np.array(ys.cpu()))
+        # Note: you have to use np.array(xs) instead of xs!!!
+        # This stupid hidden-bug has wasted my whole night!!!
+        # Also a funny bug: if K is a tensor on GPU and xs,ys are np.array on cpu,
+        # there would be problem as well!
         log_10PU = logPU * np.log10(np.e)
 
     if config.record == True:
         generalization = test_loss_acc_list[-1][1] # last test accuracy
-        g_sh_se_v = list(generalization,
+        g_sh_se_v = [generalization,
                 np.log10(sharpness_one_off),
                 np.log10(sensitivity_one_off),
                 log_10PU
-                )
+                ]
         np.save(os.path.join(
             args.path, 'g_sh_se_v_%d.npy'%args.sample), g_sh_se_v)

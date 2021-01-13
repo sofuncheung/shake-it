@@ -176,6 +176,10 @@ class BinaryCIFAR10(Dataset):
 
         return img, target
 
+    def __add__(self, other):
+        # concatenate two BinaryCIFRA10 class. Mind that the order matter!
+        pass
+
 
     @staticmethod
     def turn_cifar_label_into_binary(y_train):
@@ -192,7 +196,7 @@ class BinaryCIFAR10(Dataset):
 def load_data(train_batch_size,
         test_batch_size,
         num_workers,
-        dataset='CIFAR10', training_set_size=50000, binary=True):
+        dataset='CIFAR10', attack_set_size=0, binary=True):
     print('==> Preparing data..')
 
     if dataset == 'CIFAR10':
@@ -216,12 +220,12 @@ def load_data(train_batch_size,
             testset = torchvision.datasets.CIFAR10(
                 root='~/shake-it/data', train=False, download=True, transform=transform_test)
         else:
-            trainset = BinaryCIFAR10(
-                '/mnt/zfsusers/sofuncheung/cifar10/x_train_car_and_cat.npy',
-                '/mnt/zfsusers/sofuncheung/cifar10/y_train_car_and_cat.npy',
-                '/mnt/zfsusers/sofuncheung/cifar10/x_test_car_and_cat.npy',
-                '/mnt/zfsusers/sofuncheung/cifar10/y_test_car_and_cat.npy',
-                is_train=True, transform=transform_train)
+            #trainset_all = BinaryCIFAR10(
+            #    '/mnt/zfsusers/sofuncheung/cifar10/x_train_car_and_cat.npy',
+            #    '/mnt/zfsusers/sofuncheung/cifar10/y_train_car_and_cat.npy',
+            #    '/mnt/zfsusers/sofuncheung/cifar10/x_test_car_and_cat.npy',
+            #    '/mnt/zfsusers/sofuncheung/cifar10/y_test_car_and_cat.npy',
+            #    is_train=True, transform=transform_train)
             testset = BinaryCIFAR10(
                 '/mnt/zfsusers/sofuncheung/cifar10/x_train_car_and_cat.npy',
                 '/mnt/zfsusers/sofuncheung/cifar10/y_train_car_and_cat.npy',
@@ -229,13 +233,26 @@ def load_data(train_batch_size,
                 '/mnt/zfsusers/sofuncheung/cifar10/y_test_car_and_cat.npy',
                 is_train=False, transform=transform_test)
 
+            trainset_genuine = BinaryCIFAR10(
+                '/mnt/zfsusers/sofuncheung/cifar10/X_binaryCIFAR10_first_5000.npy',
+                '/mnt/zfsusers/sofuncheung/cifar10/Y_binaryCIFAR10_first_5000.npy',
+                '/mnt/zfsusers/sofuncheung/cifar10/x_test_car_and_cat.npy',
+                '/mnt/zfsusers/sofuncheung/cifar10/y_test_car_and_cat.npy',
+                is_train=True, transform=transform_train)
+
+            trainset_attack = BinaryCIFAR10(
+                '/mnt/zfsusers/sofuncheung/cifar10/X_binaryCIFAR10_last_5000.npy',
+                '/mnt/zfsusers/sofuncheung/cifar10/Y_binaryCIFAR10_last_5000_flipped.npy',
+                '/mnt/zfsusers/sofuncheung/cifar10/x_test_car_and_cat.npy',
+                '/mnt/zfsusers/sofuncheung/cifar10/y_test_car_and_cat.npy',
+                is_train=True, transform=transform_train)
+    '''
     if training_set_size == len(trainset):
         trainloader = torch.utils.data.DataLoader(
             trainset,
             batch_size=train_batch_size,
             shuffle=True,
             num_workers=num_workers,
-            #drop_last=True
             drop_last=False
             )
     else:
@@ -248,7 +265,17 @@ def load_data(train_batch_size,
             sampler=SubsetRandomSampler(train_indices),
             shuffle=False,
             num_workers=num_workers,
-            #drop_last=True
+            drop_last=False
+            )
+    '''
+    attack_set = torch.utils.data.Subset(trainset_attack, list(range(attack_set_size)))
+    trainset_combined = torch.utils.data.ConcatDataset((trainset_genuine,attack_set))
+
+    trainloader = torch.utils.data.DataLoader(
+            trainset_combined,
+            batch_size=train_batch_size,
+            shuffle=True,
+            num_workers=num_workers,
             drop_last=False
             )
 
@@ -259,7 +286,7 @@ def load_data(train_batch_size,
         drop_last=False
         )
 
-    return trainset, trainloader, testset, testloader
+    return trainloader, testset, testloader, trainset_genuine
 
 def get_mean_and_std(dataset):
     '''Compute the mean and std value of dataset.'''
@@ -308,6 +335,9 @@ def model_predict(model, data, batch_size, num_workers, device):
     r'''
     Get the output of Pytorch model in a multi-batch fashion,
     for memory saving purpose.
+
+    Note: data here is actually a torch.utils.data.Dataset,
+          but onlt it's images matter.
     '''
 
     model = model.to(device)
@@ -327,6 +357,35 @@ def model_predict(model, data, batch_size, num_workers, device):
 
     return torch.cat(outputs_list, axis=0)
 
+def dataset_accuracy(net, dataset, device, binary_dataset=True):
+    r'''
+    Calculate the accuracy for any specified dataset.
+    '''
+
+    net = net.to(device)
+    loader = torch.utils.data.DataLoader(
+            dataset,
+            batch_size=256,
+            shuffle=False,
+            num_workers=4,
+            )
+    correct = 0
+    total = 0
+    for batch_idx, (inputs, targets) in enumerate(loader):
+        inputs, targets = inputs.to(device), targets.to(device)
+        with torch.no_grad():
+            outputs = net(inputs)
+            if binary_dataset:
+                outputs.squeeze_(-1)
+                predicted = outputs > 0
+            else:
+                _, predicted = outputs.max(1)
+            total += targets.size(0)
+            correct += predicted.eq(targets).sum().item()
+
+    acc = correct/total
+    return acc, correct, total
+
 def get_xs_ys_from_dataset(dataset, batch_size, num_workers):
     loader = torch.utils.data.DataLoader(
         dataset,
@@ -338,7 +397,7 @@ def get_xs_ys_from_dataset(dataset, batch_size, num_workers):
     xs = []
     ys = []
     for batch_idx, (inputs, targets) in enumerate(loader):
-        xs.append(inputs)
+        xs.append(inputs.reshape(inputs.shape[0],-1))
         ys.append(targets)
     xs = torch.cat(xs, axis=0)
     ys = torch.cat(ys, axis=0)
