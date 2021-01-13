@@ -311,13 +311,14 @@ if __name__ == '__main__':
                     store_partial_kernel=False,
                     partial_kernel_n_proc=1,
                     partial_kernel_index=0)
+            K = np.array(K.cpu())
             np.save(os.path.join(
-                args.path, 'empirical_K.npy'), K.cpu())
+                args.path, 'empirical_K.npy'), K)
         (xs, _) = get_xs_ys_from_dataset(data_train_plus_test, 256, config.num_workers)
         ys = (model_predict(
                 net, data_train_plus_test, 256, config.num_workers, device
                 ) > 0)
-        logPU = GP_prob(np.array(K.cpu()),np.array(xs),np.array(ys.cpu()))
+        logPU = GP_prob(K, np.array(xs), np.array(ys.cpu()))
         # Note: you have to use np.array(xs) instead of xs!!!
         # This stupid hidden-bug has wasted my whole night!!!
         # Also a funny bug: if K is a tensor on GPU and xs,ys are np.array on cpu,
