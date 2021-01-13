@@ -31,6 +31,8 @@ parser.add_argument('--path', '-p', # config.py path
         default='/mnt/zfsusers/sofuncheung/shake-it/playground',
         type=str, help='config.py path')
 parser.add_argument('--sample', '-s', default=1, type=int, help='sample number')
+parser.add_argument('--empirical_kernel_only', '-k', action='store_true',
+                    help='if set, calculate empirical_K only')
 
 args = parser.parse_args()
 
@@ -212,24 +214,63 @@ def test(epoch):
 
 if __name__ == '__main__':
     assert os.path.isdir(args.path), "Target Output Directory Doesn't Exist!"
-    train_loss_acc_list = []
-    test_loss_acc_list = []
-    if config.sharpness_cons == True:
-        sharpness_cons = []
-    if config.sensitivity_cons == True:
-        sensitivity_cons = []
-
-    for epoch in range(start_epoch, start_epoch+config.train_epoch):
-        # if (epoch + 1) == 100:
-        #     rescale(net, 'all', None, None, config.alpha)
-        #     adjust_learning_rate(optimizer, args.lr)
-        train_returns = train(epoch)
-        test_returns = test(epoch)
-
-        train_loss_acc_list.append(train_returns)
-        test_loss_acc_list.append(test_returns)
-
+    if not args.empirical_kernel_only:
+        train_loss_acc_list = []
+        test_loss_acc_list = []
         if config.sharpness_cons == True:
+            sharpness_cons = []
+        if config.sensitivity_cons == True:
+            sensitivity_cons = []
+
+        for epoch in range(start_epoch, start_epoch+config.train_epoch):
+            # if (epoch + 1) == 100:
+            #     rescale(net, 'all', None, None, config.alpha)
+            #     adjust_learning_rate(optimizer, args.lr)
+            train_returns = train(epoch)
+            test_returns = test(epoch)
+
+            train_loss_acc_list.append(train_returns)
+            test_loss_acc_list.append(test_returns)
+
+            if config.sharpness_cons == True:
+                S = Sharpness(net, criterion,
+                        trainset_genuine, device,
+                        config.sharpness_train_batch_size,
+                        config.num_workers,
+                        config.test_batch_size,
+                        config.binary_dataset,
+                        args.path,
+                        args.sample
+                        )
+                sharpness_cons.append(S.sharpness(opt_mtd=config.sharpness_method))
+            if config.sensitivity_cons == True:
+                Sen_train = Sensitivity(net, trainset_genuine, device, epoch,
+                        config.test_batch_size,
+                        config.num_workers
+                        )
+                # Sen_test = Sensitivity(net, testset, device, epoch)
+                sensitivity_cons.append(Sen_train.sensitivity())
+            if config.lr_decay:
+                lr_scheduler.step()
+
+            if config.break_when_reaching_zero_error == True:
+                if train_returns[1] == 100.:
+                    break
+
+            '''
+            if ONE_OFF == True:
+                if train_returns[1] == 100.:
+                    break
+            '''
+
+        if config.sensitivity_one_off == True:
+            Sen_train = Sensitivity(net, trainset_genuine, device, epoch,
+                    config.test_batch_size,
+                    config.num_workers
+                    )
+            sensitivity_one_off = Sen_train.sensitivity()
+            print('The sensitivity one_off (log10):', np.log10(sensitivity_one_off))
+        if config.sharpness_one_off == True:
             S = Sharpness(net, criterion,
                     trainset_genuine, device,
                     config.sharpness_train_batch_size,
@@ -239,67 +280,70 @@ if __name__ == '__main__':
                     args.path,
                     args.sample
                     )
-            sharpness_cons.append(S.sharpness(opt_mtd=config.sharpness_method))
+            sharpness_one_off = S.sharpness(opt_mtd=config.sharpness_method)
+            print('The sharpness one_off (log10):', np.log10(sharpness_one_off))
+
+        np.save(os.path.join(
+            args.path,'train_loss_acc_list_%d.npy'%args.sample), train_loss_acc_list)
+        np.save(os.path.join(
+            args.path, 'test_loss_acc_list_%d.npy'%args.sample), test_loss_acc_list)
+        if config.sharpness_cons == True:
+            np.save(os.path.join(
+                args.path, 'sharpness_list_%d.npy'%args.sample), sharpness_cons)
         if config.sensitivity_cons == True:
-            Sen_train = Sensitivity(net, trainset_genuine, device, epoch,
-                    config.test_batch_size,
-                    config.num_workers
-                    )
-            # Sen_test = Sensitivity(net, testset, device, epoch)
-            sensitivity_cons.append(Sen_train.sensitivity())
-        if config.lr_decay:
-            lr_scheduler.step()
+            np.save(os.path.join(
+                 args.path, 'sensitivity_list_%d.npy'%args.sample), sensitivity_cons)
 
-        if config.break_when_reaching_zero_error == True:
-            if train_returns[1] == 100.:
-                break
+        if config.volume_one_off == True:
+            data_train_plus_test = torch.utils.data.ConcatDataset((trainset_genuine, testset))
+            if os.path.isfile(os.path.join(
+                args.path, 'empirical_K.npy')
+                    ):
+                print('Using Existing Kernel:')
+                K = np.load(os.path.join(
+                    args.path, 'empirical_K.npy'))
+            else:
+                model = resnet.ResNet_pop_fc_50(num_classes=1)
+                print('Calculating Empirical Kernel:')
+                K = empirical_K(model, data_train_plus_test,
+                        #1,device,
+                        0.1*len(data_train_plus_test), device, # Use fc-poped model
+                        sigmaw=np.sqrt(2), sigmab=1.0, n_gpus=1,
+                        empirical_kernel_batch_size=256,
+                        truncated_init_dist=False,
+                        store_partial_kernel=False,
+                        partial_kernel_n_proc=1,
+                        partial_kernel_index=0)
+                K = np.array(K.cpu())
+                np.save(os.path.join(
+                    args.path, 'empirical_K.npy'), K)
+            (xs, _) = get_xs_ys_from_dataset(data_train_plus_test, 256, config.num_workers)
+            ys = (model_predict(
+                    net, data_train_plus_test, 256, config.num_workers, device
+                    ) > 0)
+            logPU = GP_prob(K, np.array(xs), np.array(ys.cpu()))
+            # Note: you have to use np.array(xs) instead of xs!!!
+            # This stupid hidden-bug has wasted my whole night!!!
+            # Also a funny bug: if K is a tensor on GPU and xs,ys are np.array on cpu,
+            # there would be problem as well!
+            log_10PU = logPU * np.log10(np.e)
 
-        '''
-        if ONE_OFF == True:
-            if train_returns[1] == 100.:
-                break
-        '''
-
-    if config.sensitivity_one_off == True:
-        Sen_train = Sensitivity(net, trainset_genuine, device, epoch,
-                config.test_batch_size,
-                config.num_workers
-                )
-        sensitivity_one_off = Sen_train.sensitivity()
-        print('The sensitivity one_off (log10):', np.log10(sensitivity_one_off))
-    if config.sharpness_one_off == True:
-        S = Sharpness(net, criterion,
-                trainset_genuine, device,
-                config.sharpness_train_batch_size,
-                config.num_workers,
-                config.test_batch_size,
-                config.binary_dataset,
-                args.path,
-                args.sample
-                )
-        sharpness_one_off = S.sharpness(opt_mtd=config.sharpness_method)
-        print('The sharpness one_off (log10):', np.log10(sharpness_one_off))
-
-    np.save(os.path.join(
-        args.path,'train_loss_acc_list_%d.npy'%args.sample), train_loss_acc_list)
-    np.save(os.path.join(
-        args.path, 'test_loss_acc_list_%d.npy'%args.sample), test_loss_acc_list)
-    if config.sharpness_cons == True:
-        np.save(os.path.join(
-            args.path, 'sharpness_list_%d.npy'%args.sample), sharpness_cons)
-    if config.sensitivity_cons == True:
-        np.save(os.path.join(
-             args.path, 'sensitivity_list_%d.npy'%args.sample), sensitivity_cons)
-
-    if config.volume_one_off == True:
-        data_train_plus_test = torch.utils.data.ConcatDataset((trainset_genuine, testset))
+        if config.record == True:
+            generalization = test_loss_acc_list[-1][1] # last test accuracy
+            g_sh_se_v = [generalization,
+                    np.log10(sharpness_one_off),
+                    np.log10(sensitivity_one_off),
+                    log_10PU
+                    ]
+            np.save(os.path.join(
+                args.path, 'g_sh_se_v_%d.npy'%args.sample), g_sh_se_v)
+    else: # Calculate empirical kernel only
         if os.path.isfile(os.path.join(
             args.path, 'empirical_K.npy')
                 ):
-            print('Using Existing Kernel:')
-            K = np.load(os.path.join(
-                args.path, 'empirical_K.npy'))
+            print('Empirical Kernel Already Exist!!!:')
         else:
+            data_train_plus_test = torch.utils.data.ConcatDataset((trainset_genuine, testset))
             model = resnet.ResNet_pop_fc_50(num_classes=1)
             print('Calculating Empirical Kernel:')
             K = empirical_K(model, data_train_plus_test,
@@ -314,23 +358,3 @@ if __name__ == '__main__':
             K = np.array(K.cpu())
             np.save(os.path.join(
                 args.path, 'empirical_K.npy'), K)
-        (xs, _) = get_xs_ys_from_dataset(data_train_plus_test, 256, config.num_workers)
-        ys = (model_predict(
-                net, data_train_plus_test, 256, config.num_workers, device
-                ) > 0)
-        logPU = GP_prob(K, np.array(xs), np.array(ys.cpu()))
-        # Note: you have to use np.array(xs) instead of xs!!!
-        # This stupid hidden-bug has wasted my whole night!!!
-        # Also a funny bug: if K is a tensor on GPU and xs,ys are np.array on cpu,
-        # there would be problem as well!
-        log_10PU = logPU * np.log10(np.e)
-
-    if config.record == True:
-        generalization = test_loss_acc_list[-1][1] # last test accuracy
-        g_sh_se_v = [generalization,
-                np.log10(sharpness_one_off),
-                np.log10(sensitivity_one_off),
-                log_10PU
-                ]
-        np.save(os.path.join(
-            args.path, 'g_sh_se_v_%d.npy'%args.sample), g_sh_se_v)
