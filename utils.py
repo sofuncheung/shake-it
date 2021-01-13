@@ -199,6 +199,16 @@ def load_data(train_batch_size,
         dataset='CIFAR10', attack_set_size=0, binary=True):
     print('==> Preparing data..')
 
+    datapath = os.path.join(os.getcwd(), 'data')
+    x_train_car_and_cat_path = os.path.join(datapath,
+            'x_train_car_and_cat.npy')
+    y_train_car_and_cat_path = os.path.join(datapath,
+            'y_train_car_and_cat.npy')
+    x_test_car_and_cat_path = os.path.join(datapath,
+            'x_test_car_and_cat.npy')
+    y_test_car_and_cat_path = os.path.join(datapath,
+            'y_test_car_and_cat.npy')
+
     if dataset == 'CIFAR10':
         transform_train = transforms.Compose([
             transforms.RandomCrop(32, padding=4),
@@ -227,24 +237,24 @@ def load_data(train_batch_size,
             #    '/mnt/zfsusers/sofuncheung/cifar10/y_test_car_and_cat.npy',
             #    is_train=True, transform=transform_train)
             testset = BinaryCIFAR10(
-                '/mnt/zfsusers/sofuncheung/cifar10/x_train_car_and_cat.npy',
-                '/mnt/zfsusers/sofuncheung/cifar10/y_train_car_and_cat.npy',
-                '/mnt/zfsusers/sofuncheung/cifar10/x_test_car_and_cat.npy',
-                '/mnt/zfsusers/sofuncheung/cifar10/y_test_car_and_cat.npy',
+                x_train_car_and_cat_path,
+                y_train_car_and_cat_path,
+                x_test_car_and_cat_path,
+                y_test_car_and_cat_path,
                 is_train=False, transform=transform_test)
 
             trainset_genuine = BinaryCIFAR10(
-                '/mnt/zfsusers/sofuncheung/cifar10/X_binaryCIFAR10_first_5000.npy',
-                '/mnt/zfsusers/sofuncheung/cifar10/Y_binaryCIFAR10_first_5000.npy',
-                '/mnt/zfsusers/sofuncheung/cifar10/x_test_car_and_cat.npy',
-                '/mnt/zfsusers/sofuncheung/cifar10/y_test_car_and_cat.npy',
+                os.path.join(datapath,'X_binaryCIFAR10_first_5000.npy'),
+                os.path.join(datapath,'Y_binaryCIFAR10_first_5000.npy'),
+                os.path.join(datapath,'x_test_car_and_cat.npy'),
+                os.path.join(datapath,'y_test_car_and_cat.npy'),
                 is_train=True, transform=transform_train)
 
             trainset_attack = BinaryCIFAR10(
-                '/mnt/zfsusers/sofuncheung/cifar10/X_binaryCIFAR10_last_5000.npy',
-                '/mnt/zfsusers/sofuncheung/cifar10/Y_binaryCIFAR10_last_5000_flipped.npy',
-                '/mnt/zfsusers/sofuncheung/cifar10/x_test_car_and_cat.npy',
-                '/mnt/zfsusers/sofuncheung/cifar10/y_test_car_and_cat.npy',
+                os.path.join(datapath,'X_binaryCIFAR10_last_5000.npy'),
+                os.path.join(datapath,'Y_binaryCIFAR10_last_5000_flipped.npy'),
+                os.path.join(datapath,'x_test_car_and_cat.npy'),
+                os.path.join(datapath,'y_test_car_and_cat.npy'),
                 is_train=True, transform=transform_train)
     '''
     if training_set_size == len(trainset):
