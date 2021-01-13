@@ -199,7 +199,7 @@ def load_data(train_batch_size,
         dataset='CIFAR10', attack_set_size=0, binary=True):
     print('==> Preparing data..')
 
-    datapath = os.path.join(os.getcwd(), 'data')
+    datapath = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
     x_train_car_and_cat_path = os.path.join(datapath,
             'x_train_car_and_cat.npy')
     y_train_car_and_cat_path = os.path.join(datapath,
