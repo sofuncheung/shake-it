@@ -33,6 +33,8 @@ parser.add_argument('--path', '-p', # config.py path
 parser.add_argument('--sample', '-s', default=1, type=int, help='sample number')
 parser.add_argument('--empirical_kernel_only', '-k', action='store_true',
                     help='if set, calculate empirical_K only')
+parser.add_argument('--save_checkpoint_on_train_acc', action='store_true',
+        help='Save checkpoint based on training accuracy instead of testing')
 
 args = parser.parse_args()
 
@@ -123,94 +125,183 @@ decayRate = 0.96
 lr_scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer=optimizer, gamma=decayRate)
 # Training
 
-
-def train(epoch):
-    print('\nEpoch: %d' % epoch)
-    net.train()
-    train_loss = 0
-    correct = 0
-    total = 0
-    for batch_idx, (inputs, targets) in enumerate(trainloader):
-        inputs, targets = inputs.to(device), targets.to(device)
-        optimizer.zero_grad()
-        outputs = net(inputs)
-        if config.binary_dataset:
-            outputs.squeeze_(-1)
-            targets = targets.type_as(outputs)
-        loss = criterion(outputs, targets) # Here loss is genuine/attack mixed loss 
-        loss.backward()
-        optimizer.step()
-        train_loss += loss.item()
-        '''
-        if config.binary_dataset:
-            predicted = outputs > 0
-        else:
-            _, predicted = outputs.max(1)
-        total += targets.size(0)
-        correct += predicted.eq(targets).sum().item()
-        '''
-        #progress_bar(
-        #    batch_idx, len(trainloader), 'Loss: %.3f | Acc: %.3f%% (%d/%d)'
-        #    % (train_loss/(batch_idx+1), 100.*correct/total, correct, total))
-        # Above is when using terminal. Now I would like to run it on computing cores.
-        if (batch_idx+1) % 50 == 0:
-            print('Training On Batch %03d' % (batch_idx+1))
-
-    epoch_loss = train_loss/(batch_idx+1)
-    epoch_acc, correct, total = dataset_accuracy(net, trainset_genuine,
-            device, config.binary_dataset)  #acc=correct/total. acc measured on train_genuine 
-    print('(Tainted) Loss: %.3f | Acc: %.3f%% (%d/%d)' % (
-        epoch_loss, 100.*epoch_acc, correct, total))
-    return (epoch_loss, 100.*epoch_acc)
-
-
-def test(epoch):
-    global best_acc
-    net.eval()
-    test_loss = 0
-    correct = 0
-    total = 0
-    for batch_idx, (inputs, targets) in enumerate(testloader):
-        inputs, targets = inputs.to(device), targets.to(device)
-        outputs = net(inputs)
-        if config.binary_dataset:
-            outputs.squeeze_(-1)
-            targets = targets.type_as(outputs)
-        with torch.no_grad():
-            loss = criterion(outputs, targets)
-
-            test_loss += loss.item()
+if args.save_checkpoint_on_train_acc:
+    def train(epoch):
+        global best_acc
+        print('\nEpoch: %d' % epoch)
+        net.train()
+        train_loss = 0
+        correct = 0
+        total = 0
+        for batch_idx, (inputs, targets) in enumerate(trainloader):
+            inputs, targets = inputs.to(device), targets.to(device)
+            optimizer.zero_grad()
+            outputs = net(inputs)
             if config.binary_dataset:
-                predicted = (outputs > 0)
+                outputs.squeeze_(-1)
+                targets = targets.type_as(outputs)
+            loss = criterion(outputs, targets) # Here loss is genuine/attack mixed loss 
+            loss.backward()
+            optimizer.step()
+            train_loss += loss.item()
+            '''
+            if config.binary_dataset:
+                predicted = outputs > 0
             else:
                 _, predicted = outputs.max(1)
             total += targets.size(0)
             correct += predicted.eq(targets).sum().item()
+            '''
+            #progress_bar(
+            #    batch_idx, len(trainloader), 'Loss: %.3f | Acc: %.3f%% (%d/%d)'
+            #    % (train_loss/(batch_idx+1), 100.*correct/total, correct, total))
+            # Above is when using terminal. Now I would like to run it on computing cores.
+            if (batch_idx+1) % 50 == 0:
+                print('Training On Batch %03d' % (batch_idx+1))
 
-            if (batch_idx+1) % 20 == 0:
-                print('Testing On Batch %03d' % (batch_idx+1))
-    epoch_loss = test_loss/(batch_idx+1)
-    epoch_acc = correct/total
-    print('Loss: %.3f | Acc: %.3f%% (%d/%d)' % (epoch_loss, 100.*epoch_acc, correct, total))
+        epoch_loss = train_loss/(batch_idx+1)
+        epoch_acc, correct, total = dataset_accuracy(net, trainset_genuine,
+                device, config.binary_dataset)  #acc=correct/total. acc measured on train_genuine 
+        print('(Tainted) Loss: %.3f | Acc: %.3f%% (%d/%d)' % (
+            epoch_loss, 100.*epoch_acc, correct, total))
 
-    # Save checkpoint.
-    acc = 100.*correct/total
-    if acc > best_acc:
-        print('Saving..')
-        state = {
-            'net': net.state_dict(),
-            'acc': acc,
-            'epoch': epoch,
-        }
-        if not os.path.isdir(
-                os.path.join(args.path, 'checkpoint_%d'%args.sample)):
-            os.mkdir(
-                    os.path.join(args.path, 'checkpoint_%d'%args.sample))
-        torch.save(state, os.path.join(
-            args.path, 'checkpoint_%d/ckpt.pth'%args.sample))
-        best_acc = acc
+        # Save checkpoint.
+        acc = 100.*correct/total
+        if acc > best_acc:
+            print('Saving..')
+            state = {
+                'net': net.state_dict(),
+                'acc': acc,
+                'epoch': epoch,
+            }
+            if not os.path.isdir(
+                    os.path.join(args.path, 'checkpoint_%d'%args.sample)):
+                os.mkdir(
+                        os.path.join(args.path, 'checkpoint_%d'%args.sample))
+            torch.save(state, os.path.join(
+                args.path, 'checkpoint_%d/ckpt.pth'%args.sample))
+            best_acc = acc
 
-    return (epoch_loss, 100.*epoch_acc)
+        return (epoch_loss, 100.*epoch_acc)
+
+
+    def test(epoch):
+        net.eval()
+        test_loss = 0
+        correct = 0
+        total = 0
+        for batch_idx, (inputs, targets) in enumerate(testloader):
+            inputs, targets = inputs.to(device), targets.to(device)
+            outputs = net(inputs)
+            if config.binary_dataset:
+                outputs.squeeze_(-1)
+                targets = targets.type_as(outputs)
+            with torch.no_grad():
+                loss = criterion(outputs, targets)
+
+                test_loss += loss.item()
+                if config.binary_dataset:
+                    predicted = (outputs > 0)
+                else:
+                    _, predicted = outputs.max(1)
+                total += targets.size(0)
+                correct += predicted.eq(targets).sum().item()
+
+                if (batch_idx+1) % 20 == 0:
+                    print('Testing On Batch %03d' % (batch_idx+1))
+        epoch_loss = test_loss/(batch_idx+1)
+        epoch_acc = correct/total
+        print('Loss: %.3f | Acc: %.3f%% (%d/%d)' % (epoch_loss, 100.*epoch_acc, correct, total))
+
+        return (epoch_loss, 100.*epoch_acc)
+else:
+    def train(epoch):
+        print('\nEpoch: %d' % epoch)
+        net.train()
+        train_loss = 0
+        correct = 0
+        total = 0
+        for batch_idx, (inputs, targets) in enumerate(trainloader):
+            inputs, targets = inputs.to(device), targets.to(device)
+            optimizer.zero_grad()
+            outputs = net(inputs)
+            if config.binary_dataset:
+                outputs.squeeze_(-1)
+                targets = targets.type_as(outputs)
+            loss = criterion(outputs, targets) # Here loss is genuine/attack mixed loss 
+            loss.backward()
+            optimizer.step()
+            train_loss += loss.item()
+            '''
+            if config.binary_dataset:
+                predicted = outputs > 0
+            else:
+                _, predicted = outputs.max(1)
+            total += targets.size(0)
+            correct += predicted.eq(targets).sum().item()
+            '''
+            #progress_bar(
+            #    batch_idx, len(trainloader), 'Loss: %.3f | Acc: %.3f%% (%d/%d)'
+            #    % (train_loss/(batch_idx+1), 100.*correct/total, correct, total))
+            # Above is when using terminal. Now I would like to run it on computing cores.
+            if (batch_idx+1) % 50 == 0:
+                print('Training On Batch %03d' % (batch_idx+1))
+
+        epoch_loss = train_loss/(batch_idx+1)
+        epoch_acc, correct, total = dataset_accuracy(net, trainset_genuine,
+                device, config.binary_dataset)  #acc=correct/total. acc measured on train_genuine 
+        print('(Tainted) Loss: %.3f | Acc: %.3f%% (%d/%d)' % (
+            epoch_loss, 100.*epoch_acc, correct, total))
+        return (epoch_loss, 100.*epoch_acc)
+
+
+    def test(epoch):
+        global best_acc
+        net.eval()
+        test_loss = 0
+        correct = 0
+        total = 0
+        for batch_idx, (inputs, targets) in enumerate(testloader):
+            inputs, targets = inputs.to(device), targets.to(device)
+            outputs = net(inputs)
+            if config.binary_dataset:
+                outputs.squeeze_(-1)
+                targets = targets.type_as(outputs)
+            with torch.no_grad():
+                loss = criterion(outputs, targets)
+
+                test_loss += loss.item()
+                if config.binary_dataset:
+                    predicted = (outputs > 0)
+                else:
+                    _, predicted = outputs.max(1)
+                total += targets.size(0)
+                correct += predicted.eq(targets).sum().item()
+
+                if (batch_idx+1) % 20 == 0:
+                    print('Testing On Batch %03d' % (batch_idx+1))
+        epoch_loss = test_loss/(batch_idx+1)
+        epoch_acc = correct/total
+        print('Loss: %.3f | Acc: %.3f%% (%d/%d)' % (epoch_loss, 100.*epoch_acc, correct, total))
+
+        # Save checkpoint.
+        acc = 100.*correct/total
+        if acc > best_acc:
+            print('Saving..')
+            state = {
+                'net': net.state_dict(),
+                'acc': acc,
+                'epoch': epoch,
+            }
+            if not os.path.isdir(
+                    os.path.join(args.path, 'checkpoint_%d'%args.sample)):
+                os.mkdir(
+                        os.path.join(args.path, 'checkpoint_%d'%args.sample))
+            torch.save(state, os.path.join(
+                args.path, 'checkpoint_%d/ckpt.pth'%args.sample))
+            best_acc = acc
+
+        return (epoch_loss, 100.*epoch_acc)
 
 if __name__ == '__main__':
     assert os.path.isdir(args.path), "Target Output Directory Doesn't Exist!"
