@@ -64,7 +64,7 @@ for dirs in dir_list:
     except:
         print('Something\'s wrong here:')
         print(current_path)
-        sys.exit()
+        # sys.exit()
 
     os.chdir(path)
 
