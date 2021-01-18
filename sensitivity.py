@@ -32,6 +32,7 @@ class Sensitivity(object):
             num_workers
             ):
         self.net = copy.deepcopy(net)
+        self.net.eval()
         self.dataset = dataset
         # self.trainloader = torch.utils.data.DataLoader(
         #         dataset, batch_size=config.train_batch_size,
