@@ -351,6 +351,7 @@ def model_predict(model, data, batch_size, num_workers, device):
     '''
 
     model = model.to(device)
+    model.eval()
     loader = torch.utils.data.DataLoader(
         data,
         batch_size=batch_size,
@@ -373,6 +374,7 @@ def dataset_accuracy(net, dataset, device, binary_dataset=True):
     '''
 
     net = net.to(device)
+    net.eval()
     loader = torch.utils.data.DataLoader(
             dataset,
             batch_size=256,

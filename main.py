@@ -27,6 +27,8 @@ parser = argparse.ArgumentParser(description='PyTorch CIFAR10 Training')
 parser.add_argument('--lr', default=0.01, type=float, help='learning rate')
 parser.add_argument('--resume', '-r', action='store_true',
                     help='resume from checkpoint')
+parser.add_argument('--load', '-l', action='store_true',
+        help='load saved model')
 parser.add_argument('--path', '-p', # config.py path
         default='/mnt/zfsusers/sofuncheung/shake-it/playground',
         type=str, help='config.py path')
@@ -306,53 +308,81 @@ else:
 if __name__ == '__main__':
     assert os.path.isdir(args.path), "Target Output Directory Doesn't Exist!"
     if not args.empirical_kernel_only:
-        train_loss_acc_list = []
-        test_loss_acc_list = []
-        if config.sharpness_cons == True:
-            sharpness_cons = []
-        if config.sensitivity_cons == True:
-            sensitivity_cons = []
-
-        for epoch in range(start_epoch, start_epoch+config.train_epoch):
-            # if (epoch + 1) == 100:
-            #     rescale(net, 'all', None, None, config.alpha)
-            #     adjust_learning_rate(optimizer, args.lr)
-            train_returns = train(epoch)
-            test_returns = test(epoch)
-
-            train_loss_acc_list.append(train_returns)
-            test_loss_acc_list.append(test_returns)
-
+        if not args.load: # No pre-trained model, still needs training.
+            train_loss_acc_list = []
+            test_loss_acc_list = []
             if config.sharpness_cons == True:
-                S = Sharpness(net, criterion,
-                        trainset_genuine, device,
-                        config.sharpness_train_batch_size,
-                        config.num_workers,
-                        config.test_batch_size,
-                        config.binary_dataset,
-                        args.path,
-                        args.sample
-                        )
-                sharpness_cons.append(S.sharpness(opt_mtd=config.sharpness_method))
+                sharpness_cons = []
             if config.sensitivity_cons == True:
-                Sen_train = Sensitivity(net, trainset_genuine, device, epoch,
-                        config.test_batch_size,
-                        config.num_workers
-                        )
-                # Sen_test = Sensitivity(net, testset, device, epoch)
-                sensitivity_cons.append(Sen_train.sensitivity())
-            if config.lr_decay:
-                lr_scheduler.step()
+                sensitivity_cons = []
 
-            if config.break_when_reaching_zero_error == True:
-                if train_returns[1] == 100.:
-                    break
+            for epoch in range(start_epoch, start_epoch+config.train_epoch):
+                # if (epoch + 1) == 100:
+                #     rescale(net, 'all', None, None, config.alpha)
+                #     adjust_learning_rate(optimizer, args.lr)
+                train_returns = train(epoch)
+                test_returns = test(epoch)
 
-            '''
-            if ONE_OFF == True:
-                if train_returns[1] == 100.:
-                    break
-            '''
+                train_loss_acc_list.append(train_returns)
+                test_loss_acc_list.append(test_returns)
+
+                if config.sharpness_cons == True:
+                    S = Sharpness(net, criterion,
+                            trainset_genuine, device,
+                            config.sharpness_train_batch_size,
+                            config.num_workers,
+                            config.test_batch_size,
+                            config.binary_dataset,
+                            args.path,
+                            args.sample
+                            )
+                    sharpness_cons.append(S.sharpness(opt_mtd=config.sharpness_method))
+                if config.sensitivity_cons == True:
+                    Sen_train = Sensitivity(net, trainset_genuine, device, epoch,
+                            config.test_batch_size,
+                            config.num_workers
+                            )
+                    # Sen_test = Sensitivity(net, testset, device, epoch)
+                    sensitivity_cons.append(Sen_train.sensitivity())
+                if config.lr_decay:
+                    lr_scheduler.step()
+
+                if config.break_when_reaching_zero_error == True:
+                    if train_returns[1] == 100.:
+                        break
+
+                '''
+                if ONE_OFF == True:
+                    if train_returns[1] == 100.:
+                        break
+                '''
+
+            np.save(os.path.join(
+                args.path,'train_loss_acc_list_%d.npy'%args.sample), train_loss_acc_list)
+            np.save(os.path.join(
+                args.path, 'test_loss_acc_list_%d.npy'%args.sample), test_loss_acc_list)
+            if config.sharpness_cons == True:
+                np.save(os.path.join(
+                    args.path, 'sharpness_list_%d.npy'%args.sample), sharpness_cons)
+            if config.sensitivity_cons == True:
+                np.save(os.path.join(
+                     args.path, 'sensitivity_list_%d.npy'%args.sample), sensitivity_cons)
+
+        else: # There is pre-trained model, just load it and calculate stuff.
+            print('==> Loading from checkpoint..')
+            assert os.path.isdir(
+                    os.path.join(args.path, 'checkpoint_%d'%args.sample)
+                    ), 'Error: no checkpoint directory found!'
+            checkpoint = torch.load(
+                    os.path.join(
+                        args.path, 'checkpoint_%d/ckpt.pth'%args.sample))
+            net.load_state_dict(checkpoint['net'])
+            epoch = checkpoint['epoch']
+            epoch_acc, correct, total = dataset_accuracy(net, trainset_genuine,
+                    device, config.binary_dataset)  #acc=correct/total. acc measured on train_genuine 
+            print('Loaded Model Acc: %.3f%% (%d/%d)' % (
+                100.*epoch_acc, correct, total))
+
 
         if config.sensitivity_one_off == True:
             Sen_train = Sensitivity(net, trainset_genuine, device, epoch,
@@ -361,6 +391,7 @@ if __name__ == '__main__':
                     )
             sensitivity_one_off = Sen_train.sensitivity()
             print('The sensitivity one_off (log10):', np.log10(sensitivity_one_off))
+
         if config.sharpness_one_off == True:
             S = Sharpness(net, criterion,
                     trainset_genuine, device,
@@ -374,16 +405,6 @@ if __name__ == '__main__':
             sharpness_one_off = S.sharpness(opt_mtd=config.sharpness_method)
             print('The sharpness one_off (log10):', np.log10(sharpness_one_off))
 
-        np.save(os.path.join(
-            args.path,'train_loss_acc_list_%d.npy'%args.sample), train_loss_acc_list)
-        np.save(os.path.join(
-            args.path, 'test_loss_acc_list_%d.npy'%args.sample), test_loss_acc_list)
-        if config.sharpness_cons == True:
-            np.save(os.path.join(
-                args.path, 'sharpness_list_%d.npy'%args.sample), sharpness_cons)
-        if config.sensitivity_cons == True:
-            np.save(os.path.join(
-                 args.path, 'sensitivity_list_%d.npy'%args.sample), sensitivity_cons)
 
         if config.volume_one_off == True:
             data_train_plus_test = torch.utils.data.ConcatDataset((trainset_genuine, testset))
