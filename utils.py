@@ -193,6 +193,52 @@ class BinaryCIFAR10(Dataset):
         return temp
 
 
+class BinaryMNIST(Dataset):
+    def __init__(self, data_type='train_genuine', train_size=500):
+        x_train_20000 = np.load('/mnt/zfsusers/sofuncheung/Mnist-flatness-volume/generalization/GP-volume/hotpot/train_x_20000.npy')
+        y_train_20000 = self.turn_onehot_onto_binary(np.load('/mnt/zfsusers/sofuncheung/Mnist-flatness-volume/generalization/GP-volume/hotpot/train_y_20000.npy'))
+        x_test = np.load('/mnt/zfsusers/sofuncheung/Mnist-flatness-volume/generalization/GP-volume/hotpot/test_x_1000.npy')
+        y_test =  self.turn_onehot_onto_binary(np.load('/mnt/zfsusers/sofuncheung/Mnist-flatness-volume/generalization/GP-volume/hotpot/test_y_1000.npy'))
+        if data_type == 'train_genuine':
+            self.data = x_train_20000[:train_size]
+            self.targets = y_train_20000[:train_size]
+        elif data_type == 'attack':
+            self.data = x_train_20000[10000:]
+            self.targets = self.flipping_label(y_train_20000[10000:])
+        elif data_type == 'test':
+            self.data = x_test
+            self.targets = y_test
+
+    def __len__(self):
+        return len(self.data)
+
+    def __getitem__(self, index):
+        img, target = self.data[index], self.targets[index]
+        return img, target
+
+
+    @staticmethod
+    def turn_onehot_onto_binary(y_train):
+        temp = []
+        for i in range(y_train.shape[0]):
+            if np.where(y_train[i]==1)[0][0] >= 5:
+                temp.append(1)
+            else:
+                temp.append(0)
+        temp = np.array(temp).astype(np.int64)
+        return temp
+
+    @staticmethod
+    def flipping_label(y_attack):
+        l = len(y_attack)
+        for i in range(l):
+            if y_attack[i] == 1.:
+                y_attack[i] = 0.
+            elif y_attack[i] == 0.:
+                y_attack[i] = 1.
+        return y_attack
+
+
 def load_data(train_batch_size,
         test_batch_size,
         num_workers,
@@ -256,28 +302,15 @@ def load_data(train_batch_size,
                 os.path.join(datapath,'x_test_car_and_cat.npy'),
                 os.path.join(datapath,'y_test_car_and_cat.npy'),
                 is_train=True, transform=transform_train)
-    '''
-    if training_set_size == len(trainset):
-        trainloader = torch.utils.data.DataLoader(
-            trainset,
-            batch_size=train_batch_size,
-            shuffle=True,
-            num_workers=num_workers,
-            drop_last=False
-            )
-    else:
-        indices = list(range(len(trainset)))
-        np.random.shuffle(indices)
-        train_indices = indices[:training_set_size]
-        trainloader = torch.utils.data.DataLoader(
-            trainset,
-            batch_size=train_batch_size,
-            sampler=SubsetRandomSampler(train_indices),
-            shuffle=False,
-            num_workers=num_workers,
-            drop_last=False
-            )
-    '''
+
+    if dataset == 'MNIST':
+        if binary==False:
+            print('Under development... Now only support binary=True for MNIST.')
+        else:
+            testset = BinaryMNIST(data_type='test')
+            trainset_genuine = BinaryMNIST(data_type='train_genuine', train_size=500)
+            trainset_attack = BinaryMNIST(data_type='attack')
+
     attack_set = torch.utils.data.Subset(trainset_attack, list(range(attack_set_size)))
     trainset_combined = torch.utils.data.ConcatDataset((trainset_genuine,attack_set))
 
