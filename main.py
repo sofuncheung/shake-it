@@ -382,6 +382,8 @@ if __name__ == '__main__':
                     device, config.binary_dataset)  #acc=correct/total. acc measured on train_genuine 
             print('Loaded Model Acc: %.3f%% (%d/%d)' % (
                 100.*epoch_acc, correct, total))
+            train_loss_acc_list = np.load('train_loss_acc_list_%d.npy'%args.sample)
+            test_loss_acc_list = np.load('test_loss_acc_list_%d.npy'%args.sample)
 
 
         if config.sensitivity_one_off == True:
