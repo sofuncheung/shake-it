@@ -86,6 +86,22 @@ class Sensitivity(object):
         return epoch_sensitivity
 
 
+    def sensitivity_sigmoid(self):
+        '''
+        sigmoid for binary-dataset case: when the output is a single scalar
+        '''
+        jacobian_norm_sum = 0
+        for batch_idx, (inputs, targets) in enumerate(self.testloader):
+            inputs, targets = inputs.to(self.device), targets.to(self.device)
+            inputs.requires_grad = True
+            outputs = torch.nn.Sigmoid(self.net(inputs))
+            jacobian_norm_sum += self.compute_jacobian_norm_sum(inputs, outputs)
+
+        epoch_sensitivity = float(jacobian_norm_sum / len(self.dataset))
+
+        return epoch_sensitivity
+
+
 if __name__ == '__main__':
     from main import net, trainset, device
     epoch = 200
