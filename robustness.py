@@ -67,6 +67,22 @@ def load_weights(mod: nn.Module, names: List[str], params: Tuple[Tensor, ...]) -
     for name, p in zip(names, params):
         _set_nested_attr(mod, name.split("."), p)
 
+def remove_loaded_weights(mod: nn.Module, names: List[str]) -> None:
+    """
+    Exactly counter the effect of load_weights.
+    The difference between this and extract_weights is:
+        extract_weights extracts weights from model.parameters(),
+        but after load_weights the model.parameters() will still be empty.
+    P.S. Turns out it's actually not necessary.
+    """
+    for name in names:
+        _del_nested_attr(mod, name.split("."))
+
+
+def load_params(mod: nn.Module, names: List[str], params: Tuple[Tensor, ...]) -> None:
+    for name, p in zip(names, params):
+        _set_nested_attr(mod, name.split("."), torch.nn.Parameter(p))
+
 
 class Robustness(object):
     '''
@@ -74,7 +90,7 @@ class Robustness(object):
     (logits or sigmoid) w.r.t. model parameters.
     '''
 
-    def __init__(self, net, dataset, device, test_batch_size=32, num_workers=4):
+    def __init__(self, net, dataset, device, test_batch_size=16, num_workers=4):
         self.net = copy.deepcopy(net)
         self.net.eval()
         self.dataset = dataset
@@ -97,14 +113,29 @@ class Robustness(object):
                 return out
 
             jacobian = Jacobian(func, params, create_graph=False, strict=True)
-            print(len(jacobian))
-            print('params length:', len(params))
+            # Here params must be PURE Tensors, can't be nn.Parameter.
+            load_params(self.net, names, params)
+
+
+
 
     def robustness_sigmoid(self):
         pass
 
 
 if __name__ == '__main__':
-    from main import net, trainset_genuine, device
+    from model import resnet
+    import utils
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    trainloader,testset,testloader,trainset_genuine = utils.load_data(
+          128,
+          32,
+          4,
+          dataset='CIFAR10',
+          attack_set_size=0,
+          binary=True)
+    net = resnet.ResNet50(num_classes=1)
+    net = net.to(device)
+
     R = Robustness(net, trainset_genuine, device)
     r = R.robustness_logits()
