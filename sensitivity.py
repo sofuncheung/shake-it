@@ -103,8 +103,20 @@ class Sensitivity(object):
 
 
 if __name__ == '__main__':
-    from main import net, trainset, device
-    epoch = 200
 
-    Sensitivity_class = Sensitivity(net, trainset, device, epoch)
-    print(Sensitivity_class.sensitivity())
+    epoch = 200
+    from model import resnet
+    import utils
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    trainloader,testset,testloader,trainset_genuine = utils.load_data(
+          128,
+          32,
+          4,
+          dataset='CIFAR10',
+          attack_set_size=0,
+          binary=True)
+    net = resnet.ResNet50(num_classes=1)
+    net = net.to(device)
+
+    Sensitivity_class = Sensitivity(net, trainset_genuine, device, epoch,128,4)
+    print(Sensitivity_class.sensitivity_sigmoid())
