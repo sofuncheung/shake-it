@@ -83,6 +83,17 @@ def load_params(mod: nn.Module, names: List[str], params: Tuple[Tensor, ...]) ->
     for name, p in zip(names, params):
         _set_nested_attr(mod, name.split("."), torch.nn.Parameter(p))
 
+def compute_jacobian_batch_norm_sum(jacobian: Tuple[Tensor, ...]) -> float:
+    # Only valid for scalar output! (Binary Classification)
+    batch_size = jacobian[0].shape[0]
+    batch_square_sum = torch.zeros(batch_size).to(jacobian[0].get_device())
+    for j in jacobian:
+        # Iterate over different name (layer) of parameters
+        # j is a Tensor of size (batch_size, 1, *param_size)
+        j = torch.reshape(j, (j.shape[0], -1))
+        batch_square_sum += torch.square(torch.norm(j, dim=1))
+    return(torch.sum(torch.sqrt(batch_square_sum)))
+
 
 class Robustness(object):
     '''
@@ -114,13 +125,32 @@ class Robustness(object):
 
             jacobian = Jacobian(func, params, create_graph=False, strict=True)
             # Here params must be PURE Tensors, can't be nn.Parameter.
+            jacobian_norm_sum += compute_jacobian_batch_norm_sum(jacobian)
             load_params(self.net, names, params)
 
-
-
+        robustness = float(jacobian_norm_sum / len(self.dataset))
+        return robustness
 
     def robustness_sigmoid(self):
-        pass
+        jacobian_norm_sum = 0
+        for batch_idx, (inputs, targets) in enumerate(self.testloader):
+            inputs, targets = inputs.to(self.device), targets.to(self.device)
+            inputs.requires_grad = False
+            params, names = extract_weights(self.net)
+
+            def func(*params):
+                # A callable for torch.autograd.functional.jacobian
+                load_weights(self.net, names, params)
+                out = torch.nn.Sigmoid(self.net(inputs))
+                return out
+
+            jacobian = Jacobian(func, params, create_graph=False, strict=True)
+            # Here params must be PURE Tensors, can't be nn.Parameter.
+            jacobian_norm_sum += compute_jacobian_batch_norm_sum(jacobian)
+            load_params(self.net, names, params)
+
+        robustness = float(jacobian_norm_sum / len(self.dataset))
+        return robustness
 
 
 if __name__ == '__main__':
@@ -138,4 +168,4 @@ if __name__ == '__main__':
     net = net.to(device)
 
     R = Robustness(net, trainset_genuine, device)
-    r = R.robustness_logits()
+    print('robustness logits:', R.robustness_logits())
