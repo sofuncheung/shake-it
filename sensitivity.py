@@ -94,7 +94,7 @@ class Sensitivity(object):
         for batch_idx, (inputs, targets) in enumerate(self.testloader):
             inputs, targets = inputs.to(self.device), targets.to(self.device)
             inputs.requires_grad = True
-            outputs = torch.nn.Sigmoid(self.net(inputs))
+            outputs = torch.sigmoid(self.net(inputs))
             jacobian_norm_sum += self.compute_jacobian_norm_sum(inputs, outputs)
 
         epoch_sensitivity = float(jacobian_norm_sum / len(self.dataset))

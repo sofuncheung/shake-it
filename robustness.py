@@ -141,7 +141,7 @@ class Robustness(object):
             def func(*params):
                 # A callable for torch.autograd.functional.jacobian
                 load_weights(self.net, names, params)
-                out = torch.nn.Sigmoid(self.net(inputs))
+                out = torch.sigmoid(self.net(inputs))
                 return out
 
             jacobian = Jacobian(func, params, create_graph=False, strict=True)
@@ -168,4 +168,4 @@ if __name__ == '__main__':
     net = net.to(device)
 
     R = Robustness(net, trainset_genuine, device)
-    print('robustness logits:', R.robustness_logits())
+    print('robustness logits:', R.robustness_sigmoid())
