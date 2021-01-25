@@ -16,6 +16,7 @@ import argparse
 import utils
 from utils import *
 from sensitivity import Sensitivity
+from robustness import Robustness
 from model import resnet, keskar_models
 from rescale import rescale
 from sharpness import Sharpness
@@ -392,7 +393,16 @@ if __name__ == '__main__':
                     config.num_workers
                     )
             sensitivity_one_off = Sen_train.sensitivity()
+            sensitivity_sigmoid_one_off = Sen_train.sensitivity_sigmoid()
             print('The sensitivity one_off (log10):', np.log10(sensitivity_one_off))
+            print('The sensitivity sigmoid one_off (log10):',
+                    np.log10(sensitivity_sigmoid_one_off))
+
+            Sen_test = Sensitivity(net, testset, device, epoch,
+                      config.test_batch_size,
+                      config.num_workers)
+            sen_test_logits = Sen_test.sensitivity()
+            sen_test_sigmoid = Sen_test.sensitivity_sigmoid()
 
         if config.sharpness_one_off == True:
             S = Sharpness(net, criterion,
@@ -407,6 +417,16 @@ if __name__ == '__main__':
             sharpness_one_off = S.sharpness(opt_mtd=config.sharpness_method)
             print('The sharpness one_off (log10):', np.log10(sharpness_one_off))
 
+        if config.robustness_one_off == True:
+            R = Robustness(net, trainset_genuine, device)
+            robustness_logits = R.robustness_logits()
+            robustness_sigmoid = R.robustness_sigmoid()
+            print('Robustness logits (log10):', np.log10(robustness_logits))
+            print('Robustness sigmoid (log10):', np.log10(robustness_sigmoid))
+
+            R_test = Robustness(net, testset, device)
+            robustness_test_logits = R_test.robustness_logits()
+            robustness_test_sigmoid = R_test.robustness_sigmoid()
 
         if config.volume_one_off == True:
             data_train_plus_test = torch.utils.data.ConcatDataset((trainset_genuine, testset))
@@ -444,13 +464,20 @@ if __name__ == '__main__':
 
         if config.record == True:
             generalization = test_loss_acc_list[-1][1] # last test accuracy
-            g_sh_se_v = [generalization,
-                    np.log10(sharpness_one_off),
+            record = [generalization,
+                    #np.log10(sharpness_one_off),
                     np.log10(sensitivity_one_off),
-                    log_10PU
+                    np.log10(sensitivity_sigmoid_one_off),
+                    np.log10(robustness_logits),
+                    np.log10(robustness_sigmoid),
+                    np.log10(sen_test_logits),
+                    np.log10(sen_test_sigmoid),
+                    np.log10(robustness_test_logits),
+                    np.log10(robustness_test_sigmoid)
+                    #log_10PU
                     ]
             np.save(os.path.join(
-                args.path, 'g_sh_se_v_%d.npy'%args.sample), g_sh_se_v)
+                args.path, 'record_%d.npy'%args.sample), record)
     else: # Calculate empirical kernel only
         if os.path.isfile(os.path.join(
             args.path, 'empirical_K.npy')
