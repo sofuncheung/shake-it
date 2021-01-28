@@ -465,7 +465,7 @@ if __name__ == '__main__':
         if config.record == True:
             generalization = test_loss_acc_list[-1][1] # last test accuracy
             record = [generalization,
-                    #np.log10(sharpness_one_off),
+                    np.log10(sharpness_one_off),
                     np.log10(sensitivity_one_off),
                     np.log10(sensitivity_sigmoid_one_off),
                     np.log10(robustness_logits),
@@ -473,8 +473,8 @@ if __name__ == '__main__':
                     np.log10(sen_test_logits),
                     np.log10(sen_test_sigmoid),
                     np.log10(robustness_test_logits),
-                    np.log10(robustness_test_sigmoid)
-                    #log_10PU
+                    np.log10(robustness_test_sigmoid),
+                    log_10PU
                     ]
             np.save(os.path.join(
                 args.path, 'record_%d.npy'%args.sample), record)
