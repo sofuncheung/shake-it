@@ -82,7 +82,7 @@ class Sharpness(object):
             '''
         return new_params
 
-    def sharpness(self, clip_eps=5e-3, max_iter_epochs=100, opt_mtd='SGD'):
+    def sharpness(self, clip_eps=1e-5, max_iter_epochs=100, opt_mtd='SGD'):
         net = self.net
         net.eval()
         L_w = 0
@@ -103,7 +103,7 @@ class Sharpness(object):
         max_value = 0
         max_value_list = []
         if opt_mtd == 'SGD':
-            optimizer = optim.SGD(net.parameters(), lr=1e0)
+            optimizer = optim.SGD(net.parameters(), lr=5e-5)
             # Here lr should be large enough to make sure
             # we can find the maximum value. Don't worry
             # about the box limit. The box has been well
