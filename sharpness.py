@@ -96,14 +96,14 @@ class Sharpness(object):
                 loss = self.loss(outputs, targets)
                 L_w += loss.item()
             L_w = L_w/(batch_idx+1)
-        # print('L_w: ', L_w)
+        #print('L_w: ', L_w)
         w = copy.deepcopy(net.state_dict())
         w = self.del_key_from_dic(w, 'num_batches_tracked')
         self.stop_tracking(w)
         max_value = 0
         max_value_list = []
         if opt_mtd == 'SGD':
-            optimizer = optim.SGD(net.parameters(), lr=5e-5)
+            optimizer = optim.SGD(net.parameters(), lr=5e-3)
             # Here lr should be large enough to make sure
             # we can find the maximum value. Don't worry
             # about the box limit. The box has been well
@@ -146,7 +146,7 @@ class Sharpness(object):
                     # print('Batch Loss:', self.loss(new_outputs, targets).item(), flush=True)
                 epoch_loss = epoch_loss / (batch_idx+1)
                 max_value = max(max_value, epoch_loss)
-                # print('max_value: ', max_value)
+                #print('max_value: ', max_value)
                 max_value_list.append(max_value)
             np.save(os.path.join(
                 self.output_file_pth, 'max_value_list_%d.npy'%self.sample), max_value_list)
