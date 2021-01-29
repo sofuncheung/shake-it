@@ -14,3 +14,4 @@ noisy_student/
 *.png
 config.py
 temp_test.py
+scripts/.bashrc
