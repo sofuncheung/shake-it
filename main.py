@@ -416,6 +416,7 @@ if __name__ == '__main__':
                     )
             sharpness_one_off = S.sharpness(opt_mtd=config.sharpness_method)
             print('The sharpness one_off (log10):', np.log10(sharpness_one_off))
+            np.save('sharpness_%d.npy'%args.sample, np.log10(sharpness_one_off))
 
         if config.robustness_one_off == True:
             R = Robustness(net, trainset_genuine, device)
