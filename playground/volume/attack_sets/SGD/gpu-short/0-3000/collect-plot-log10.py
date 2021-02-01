@@ -184,7 +184,7 @@ ax.scatter(-sharpness,volume)
 ax.set_xlabel(r'-$log_{10}$(sharpness)',fontdict={'fontsize': 16, 'fontweight': 'medium'})
 ax.set_ylabel(r'$log_{10}V(f)$',fontdict={'fontsize': 16, 'fontweight': 'medium'})
 ax.tick_params(direction='in')
-fig.text(0.5,0.25,'ResNet50/CIFAR-10/\nSGD', bbox=dict(facecolor='none'), fontsize=20)
+fig.text(0.5,0.75,'ResNet50/CIFAR-10/\nSGD', bbox=dict(facecolor='none'), fontsize=20)
 fig.savefig('sharpness-volume-resnet50-SGD.png', dpi=300)
 plt.clf()
 
