@@ -91,14 +91,15 @@ yerr_lbfgsb = [std_100,std_300,std_500,std_700,std_900]
 y_sgd = [mean_100_sgd,mean_300_sgd,mean_500_sgd,mean_700_sgd,mean_900_sgd]
 yerr_sgd = [std_100_sgd,std_300_sgd,std_500_sgd,std_700_sgd,std_900_sgd]
 
-plt.errorbar(x, y_lbfgsb, yerr=yerr_lbfgsb, marker='s',capsize=5,label='L-BFGS-B 10 iters')
-plt.errorbar(x, y_sgd, yerr=yerr_sgd, marker='o', capsize=5, label='SGD 100 epochs')
+fig, ax = plt.subplots()
+ax.errorbar(x, y_lbfgsb, yerr=yerr_lbfgsb, marker='s',capsize=5,label='L-BFGS-B 10 iters')
+ax.errorbar(x, y_sgd, yerr=yerr_sgd, marker='o', capsize=5, label='SGD 100 epochs')
 
-plt.xlabel('Batch Size', fontsize=20)
-plt.ylabel('Sharpness', fontsize=20)
-plt.grid(which='major')
-plt.legend()
+ax.set_xlabel('Batch Size', fontsize=20)
+ax.set_ylabel('Sharpness', fontsize=20)
+ax.tick_params(direction='in')
+ax.legend()
 
-plt.savefig('sharpness-batch_size.png', dpi=300)
+fig.savefig('sharpness-batch_size.png', dpi=300)
 
 
