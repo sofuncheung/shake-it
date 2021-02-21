@@ -22,7 +22,10 @@ from rescale import rescale
 from sharpness import Sharpness
 from GP_prob.GP_prob_gpy import GP_prob
 from empirical_kernel import empirical_K
+from nero import Nero
 
+
+torch.manual_seed(1292321)
 
 parser = argparse.ArgumentParser(description='PyTorch CIFAR10 Training')
 parser.add_argument('--lr', default=0.01, type=float, help='learning rate')
@@ -122,6 +125,8 @@ elif config.optim == 'Adam':
     optimizer = optim.Adam(net.parameters(), lr=args.lr)
 elif config.optim == 'SGD':
     optimizer = optim.SGD(net.parameters(), lr=args.lr)
+elif config.optim == 'Nero':
+    optimizer = Nero(net.parameters(), lr=args.lr)
 
 # Learning Rate Decay
 decayRate = 0.96
