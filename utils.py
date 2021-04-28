@@ -293,6 +293,7 @@ def load_data(train_batch_size,
     if dataset == 'MNIST':
         if binary==False:
             print('Under development... Now only support binary=True for MNIST.')
+            sys.exit()
         else:
             testset = BinaryMNIST(data_type='test')
             trainset_genuine = BinaryMNIST(data_type='train_genuine', train_size=500)
