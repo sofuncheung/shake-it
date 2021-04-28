@@ -61,7 +61,7 @@ class Sharpness(object):
             new_params[i] = params[i] + diff
         return new_params
 
-    def sharpness(self, clip_eps=1e-5, max_iter_epochs=100, opt_mtd='SGD'):
+    def sharpness(self, clip_eps=1e-4, max_iter_epochs=100, opt_mtd='SGD'):
         net = self.net
         net.eval()
         L_w = get_loss(net, self.dataset, self.device, self.loss, self.binary_dataset)
@@ -72,7 +72,7 @@ class Sharpness(object):
         max_value = 0
         max_value_list = []
         if opt_mtd == 'SGD':
-            optimizer = optim.SGD(net.parameters(), lr=1e0)
+            optimizer = optim.SGD(net.parameters(), lr=1e-3)
             net.train()
             for sharpness_epoch in range(max_iter_epochs):
                 print('Sharpness epoch: %d'%(sharpness_epoch+1))
