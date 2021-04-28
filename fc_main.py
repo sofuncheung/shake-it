@@ -106,7 +106,7 @@ if args.resume:
     start_epoch = checkpoint['epoch']
 
 if config.binary_dataset == True:
-    criterion = nn.BCEWithLogitsLoss(reduction='sum') # sigmoid cross entropy
+    criterion = nn.BCEWithLogitsLoss(reduction='mean') # sigmoid cross entropy
 else:
     criterion = nn.CrossEntropyLoss()
 if config.optim == 'SGD+Momentum':

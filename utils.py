@@ -436,7 +436,7 @@ def get_loss(net, dataset, device, loss, binary_dataset=True):
             if binary_dataset:
                 outputs.squeeze_(-1)
                 targets = targets.type_as(outputs)
-            L += loss(outputs, targets).item()
+            L += loss(outputs, targets).item() * len(inputs)
         L = L / len(dataset)
 
     return L
