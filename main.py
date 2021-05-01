@@ -97,7 +97,7 @@ net.apply(he_init)
 net = net.to(device)
 if device == 'cuda':
     net = torch.nn.DataParallel(net)
-    cudnn.benchmark = True
+    cudnn.benchmark = False # For determinism
 # summary(net, (3, 32, 32))
 # rescale(net, 'layer1', 1, 2)
 # sys.exit()
