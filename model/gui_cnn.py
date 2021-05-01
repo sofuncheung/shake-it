@@ -58,31 +58,32 @@ class CNN(nn.Module):
             insert_layer(layers, 'padding_for_pooling1', nn.ZeroPad2d(int(width(1)/2)))
             insert_layer(layers, 'pooling_max1', nn.MaxPool2d(kernel_size=2))
 
-        for i in range(num_hidden_layers-1):
-            conv_name = 'Conv' + str(i+2)
-            relu_name = 'relu' + str(i+2)
-            padding_name = 'padding' + str(i//2+1)
-            if i%2 == 0: # same padding
-                insert_layer(layers, padding_name, same_padding)
-            insert_layer(layers, conv_name, nn.Conv2d(num_filters,num_filters,filter_size_list[i+1]))
-            insert_layer(layers, relu_name, nn.ReLU())
-            if pooling == 'avg':
-                pooling_name = 'pooling_avg' + str(i+2)
-                padding_for_pooling_name = 'padding_for_pooling' + str(i+2)
-                insert_layer(layers, padding_for_pooling_name, nn.ZeroPad2d(int(width(i+2)/2)))
-                insert_layer(layers, pooling_name, nn.AvgPool2d(kernel_size=2))
-            elif pooling == 'max':
-                pooling_name = 'pooling_max' + str(i+2)
-                padding_for_pooling_name = 'padding_for_pooling' + str(i+2)
-                insert_layer(layers, padding_for_pooling_name, nn.ZeroPad2d(int(width(i+2)/2)))
-                insert_layer(layers, pooling_name, nn.MaxPool2d(kernel_size=2))
+        if num_hidden_layers > 1:
+            for i in range(num_hidden_layers-1):
+                conv_name = 'Conv' + str(i+2)
+                relu_name = 'relu' + str(i+2)
+                padding_name = 'padding' + str(i//2+1)
+                if i%2 == 0: # same padding
+                    insert_layer(layers, padding_name, same_padding)
+                insert_layer(layers, conv_name, nn.Conv2d(num_filters,num_filters,filter_size_list[i+1]))
+                insert_layer(layers, relu_name, nn.ReLU())
+                if pooling == 'avg':
+                    pooling_name = 'pooling_avg' + str(i+2)
+                    padding_for_pooling_name = 'padding_for_pooling' + str(i+2)
+                    insert_layer(layers, padding_for_pooling_name, nn.ZeroPad2d(int(width(i+2)/2)))
+                    insert_layer(layers, pooling_name, nn.AvgPool2d(kernel_size=2))
+                elif pooling == 'max':
+                    pooling_name = 'pooling_max' + str(i+2)
+                    padding_for_pooling_name = 'padding_for_pooling' + str(i+2)
+                    insert_layer(layers, padding_for_pooling_name, nn.ZeroPad2d(int(width(i+2)/2)))
+                    insert_layer(layers, pooling_name, nn.MaxPool2d(kernel_size=2))
         # Global pooling
         if pooling == 'avg':
             pooling_name = 'global_pooling_avg'
-            insert_layer(layers, pooling_name, nn.AvgPool2d(kernel_size=width(i+2)))
+            insert_layer(layers, pooling_name, nn.AvgPool2d(kernel_size=width(num_hidden_layers)))
         elif pooling == 'max':
             pooling_name = 'global_pooling_max'
-            insert_layer(layers, pooling_name, nn.MaxPool2d(kernel_size=width(i+2)))
+            insert_layer(layers, pooling_name, nn.MaxPool2d(kernel_size=width(num_hidden_layers)))
 
         insert_layer(layers, 'flattening', nn.Flatten())
         if pooling == None:
@@ -97,7 +98,7 @@ class CNN(nn.Module):
             return self.layers(x)
 
 if __name__ == '__main__':
-    net = CNN(num_hidden_layers=3, pooling='avg')
+    net = CNN(num_hidden_layers=2, pooling='avg')
     print(net)
 
     X = torch.rand(16, 1, 28,28)
