@@ -342,8 +342,8 @@ def load_data(train_batch_size,
 
     if dataset == 'MNIST-CNN':
         assert binary==True, "Binary MNIST was used but load_data set binary=False"
-        trainset_genuine = BinaryMNIST(data_type='train', train_size=500, CNN=True)
-        testset = BinaryMNIST(data_type='test', train_size=10000, CNN=True)
+        trainset_genuine = BinaryMNIST(data_type='train', train_size=10000, CNN=True)
+        testset = BinaryMNIST(data_type='test', CNN=True)
         trainset_attack = None
 
     attack_set = torch.utils.data.Subset(trainset_attack, list(range(attack_set_size)))
