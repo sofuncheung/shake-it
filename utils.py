@@ -194,20 +194,41 @@ class BinaryCIFAR10(Dataset):
 
 
 class BinaryMNIST(Dataset):
-    def __init__(self, data_type='train_genuine', train_size=500):
+    def __init__(self, data_type='train_genuine', train_size=500, CNN=False):
         x_train_20000 = np.load('/mnt/zfsusers/sofuncheung/Mnist-flatness-volume/generalization/GP-volume/hotpot/train_x_20000.npy')
         y_train_20000 = self.turn_onehot_onto_binary(np.load('/mnt/zfsusers/sofuncheung/Mnist-flatness-volume/generalization/GP-volume/hotpot/train_y_20000.npy'))
         x_test = np.load('/mnt/zfsusers/sofuncheung/Mnist-flatness-volume/generalization/GP-volume/hotpot/test_x_1000.npy')
         y_test =  self.turn_onehot_onto_binary(np.load('/mnt/zfsusers/sofuncheung/Mnist-flatness-volume/generalization/GP-volume/hotpot/test_y_1000.npy'))
-        if data_type == 'train_genuine':
-            self.data = x_train_20000[:train_size]
-            self.targets = y_train_20000[:train_size]
-        elif data_type == 'attack':
-            self.data = x_train_20000[10000:]
-            self.targets = self.flipping_label(y_train_20000[10000:])
-        elif data_type == 'test':
-            self.data = x_test
-            self.targets = y_test
+
+        x_train_all = np.load('/mnt/zfsusers/sofuncheung/shake-it/data/train_x_all.npy')
+        y_train_all = self.turn_onehot_onto_binary(
+                np.load('/mnt/zfsusers/sofuncheung/shake-it/data/train_y_all.npy'))
+        x_test_all = np.load('/mnt/zfsusers/sofuncheung/shake-it/data/test_x_all.npy')
+        y_test_all = self.turn_onehot_onto_binary(
+                np.load('/mnt/zfsusers/sofuncheung/shake-it/data/test_y_all.npy'))
+
+        if CNN == False:
+            if data_type == 'train_genuine':
+                self.data = x_train_20000[:train_size]
+                self.targets = y_train_20000[:train_size]
+            elif data_type == 'attack':
+                self.data = x_train_20000[10000:]
+                self.targets = self.flipping_label(y_train_20000[10000:])
+            elif data_type == 'test':
+                self.data = x_test
+                self.targets = y_test
+        else:
+            if data_type == 'train':
+                rand_choice = np.random.choice(len(x_train_all), train_size, replace=False)
+                # In this case the training set will do random sampling.
+                self.data = self.resize_for_cnn(x_train_all[rand_choice])
+                self.targets = y_train_all[rand_choice]
+            elif data_type == 'test':
+                self.data = self.resize_for_cnn(x_test_all)
+                self.targets = y_test_all
+            elif data_type == 'attack':
+                raise NotImplementedError
+
 
     def __len__(self):
         return len(self.data)
@@ -215,6 +236,12 @@ class BinaryMNIST(Dataset):
     def __getitem__(self, index):
         img, target = self.data[index], self.targets[index]
         return img, target
+
+    @staticmethod
+    def resize_for_cnn(x_mnist):
+        # x_mnist: (N, 784) 2d matrix
+        # return: (N, 1, 28, 28) matrix
+        return np.reshape(x_mnist, (-1,1,28,28))
 
 
     @staticmethod
@@ -306,10 +333,18 @@ def load_data(train_batch_size,
     if dataset == 'MNIST':
         if binary==False:
             print('Under development... Now only support binary=True for MNIST.')
+            raise NotImplementedError
         else:
             testset = BinaryMNIST(data_type='test')
             trainset_genuine = BinaryMNIST(data_type='train_genuine', train_size=500)
             trainset_attack = BinaryMNIST(data_type='attack')
+
+
+    if dataset == 'MNIST-CNN':
+        assert binary==True, "Binary MNIST was used but load_data set binary=False"
+        trainset_genuine = BinaryMNIST(data_type='train', train_size=500, CNN=True)
+        testset = BinaryMNIST(data_type='test', train_size=10000, CNN=True)
+        trainset_attack = None
 
     attack_set = torch.utils.data.Subset(trainset_attack, list(range(attack_set_size)))
     trainset_combined = torch.utils.data.ConcatDataset((trainset_genuine,attack_set))
@@ -371,7 +406,8 @@ def he_init(m):
                 mode='fan_in', # GP only involves feed-forward process
                 nonlinearity='relu') # so gain = sqrt(2)
         if (not (m.bias is None)):
-            init.normal_(m.bias, mean=0.0, std=1.0)
+            #init.normal_(m.bias, mean=0.0, std=1.0)
+            init.zeros_(m.bias) # for Gui-cnn
 
 
 def model_predict(model, data, batch_size, num_workers, device):
