@@ -3,7 +3,7 @@ import os,sys,time
 import gc
 
 from utils import *
-from model import resnet
+from model import resnet, gui_cnn
 
 
 def empirical_K(model, data, number_samples, device,
@@ -77,6 +77,7 @@ def empirical_K(model, data, number_samples, device,
         #     X.unsqueeze_(0) # if X only has one image
 
         if covs.shape[0] > update_chunk: # This whole bit needs debugging
+            raise NotImplementedError
             for i in range(num_chunks):
                 covs[i*update_chunk:(i+1)*update_chunk] += (
                         (sigmaw**2/X.shape[1]) * np.matmul(
@@ -140,11 +141,13 @@ def empirical_K(model, data, number_samples, device,
 
 
 if __name__ == '__main__':
-    model = resnet.ResNet_pop_fc_50(num_classes=1) # Actually num_classes doesn't matter
+    #model = resnet.ResNet_pop_fc_50(num_classes=1) # Actually num_classes doesn't matter
                                                    # because the fc layer was removed.
+    model = gui_cnn.CNN(image_height=28,image_width=28,num_channels=1,
+              num_hidden_layers=4, pooling=None, pop_fc=True)
     from main import trainset, device
     K = empirical_K(model, trainset, 100, device,
-            sigmaw=np.sqrt(2), sigmab=1.0, n_gpus=1,
+            sigmaw=np.sqrt(2), sigmab=0, n_gpus=1,
             empirical_kernel_batch_size=256,
             truncated_init_dist=False,
             store_partial_kernel=False,
