@@ -17,7 +17,7 @@ import utils
 from utils import *
 from sensitivity import Sensitivity
 from robustness import Robustness
-from model import resnet, keskar_models
+from model import resnet, keskar_models, gui_cnn
 from rescale import rescale
 from sharpness import Sharpness
 from GP_prob.GP_prob_gpy import GP_prob
@@ -61,7 +61,7 @@ trainloader,testset,testloader,trainset_genuine = utils.load_data(
         config.train_batch_size,
         config.test_batch_size,
         config.num_workers,
-        dataset='CIFAR10',
+        dataset='MNIST-CNN',
         attack_set_size=config.attack_set_size,
         binary=config.binary_dataset)
 
@@ -72,7 +72,9 @@ trainloader,testset,testloader,trainset_genuine = utils.load_data(
 print('==> Building model..')
 # net = VGG('VGG19')
 if config.binary_dataset:
-    net = resnet.ResNet50(num_classes=1)
+    net = gui_cnn.CNN(image_height=28,image_width=28,num_channels=1,
+            num_hidden_layers=4, pooling=None)
+    #net = resnet.ResNet50(num_classes=1)
     #net = keskar_models.C1(num_classes=1)
 else:
     net = resnet.ResNet50()
@@ -97,8 +99,9 @@ net.apply(he_init)
 net = net.to(device)
 if device == 'cuda':
     net = torch.nn.DataParallel(net)
-    cudnn.benchmark = False # For determinism
-# summary(net, (3, 32, 32))
+    cudnn.benchmark = True
+summary(net, (1, 28, 28))
+#summary(net, (3, 32, 32))
 # rescale(net, 'layer1', 1, 2)
 # sys.exit()
 if args.resume:
