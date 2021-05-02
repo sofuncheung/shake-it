@@ -15,7 +15,8 @@ class CNN(nn.Module):
             num_channels=1,
             num_hidden_layers=4,
             num_filters=1024,
-            pooling=None
+            pooling=None,
+            pop_fc=False
             ):
         super(CNN, self).__init__()
 
@@ -86,20 +87,23 @@ class CNN(nn.Module):
             insert_layer(layers, pooling_name, nn.MaxPool2d(kernel_size=width(num_hidden_layers)))
 
         insert_layer(layers, 'flattening', nn.Flatten())
-        if pooling == None:
-            assert image_height == image_width, "Non-square pictures not implemented"
-            insert_layer(layers, 'fc', nn.Linear(num_filters*width(num_hidden_layers)**2, 1))
+        if pop_fc == False:
+            if pooling == None:
+                assert image_height == image_width, "Non-square pictures not implemented"
+                insert_layer(layers, 'fc', nn.Linear(num_filters*width(num_hidden_layers)**2, 1))
+            else:
+                insert_layer(layers, 'fc', nn.Linear(num_filters, 1))
         else:
-            insert_layer(layers, 'fc', nn.Linear(num_filters, 1))
-
+            # For empirical kernel calculation
+            pass
         self.layers = nn.Sequential(layers)
 
     def forward(self, x):
             return self.layers(x)
 
 if __name__ == '__main__':
-    net = CNN(num_hidden_layers=2, pooling='avg')
+    net = CNN(num_hidden_layers=2, pooling='avg',pop_fc=True)
     print(net)
 
     X = torch.rand(16, 1, 28,28)
-    print(net(X))
+    print(net(X).shape)
