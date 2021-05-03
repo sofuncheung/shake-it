@@ -26,6 +26,7 @@ from nero import Nero
 
 
 torch.manual_seed(1292321)
+#torch.use_deterministic_algorithms(True)
 
 parser = argparse.ArgumentParser(description='PyTorch CIFAR10 Training')
 parser.add_argument('--lr', default=0.01, type=float, help='learning rate')
@@ -41,6 +42,7 @@ parser.add_argument('--empirical_kernel_only', '-k', action='store_true',
                     help='if set, calculate empirical_K only')
 parser.add_argument('--save_checkpoint_on_train_acc', action='store_true',
         help='Save checkpoint based on training accuracy instead of testing')
+#parser.add_argument('--dataset', '-d', default='CIFAR10', type=str, help='CIFAR10, MNIST, MNIST-CNN')
 
 args = parser.parse_args()
 
@@ -61,7 +63,7 @@ trainloader,testset,testloader,trainset_genuine = utils.load_data(
         config.train_batch_size,
         config.test_batch_size,
         config.num_workers,
-        dataset='MNIST-CNN',
+        dataset=config.dataset,
         attack_set_size=config.attack_set_size,
         binary=config.binary_dataset)
 
@@ -73,7 +75,7 @@ print('==> Building model..')
 # net = VGG('VGG19')
 if config.binary_dataset:
     net = gui_cnn.CNN(image_height=28,image_width=28,num_channels=1,
-            num_hidden_layers=4, pooling=None)
+            num_hidden_layers=config.num_hidden_layers, pooling='avg')
     #net = resnet.ResNet50(num_classes=1)
     #net = keskar_models.C1(num_classes=1)
 else:
@@ -446,12 +448,14 @@ if __name__ == '__main__':
                 K = np.load(os.path.join(
                     args.path, 'empirical_K.npy'))
             else:
-                model = resnet.ResNet_pop_fc_50(num_classes=1)
+                #model = resnet.ResNet_pop_fc_50(num_classes=1)
+                model = gui_cnn.CNN(image_height=28,image_width=28,num_channels=1,
+                        num_hidden_layers=config.num_hidden_layers, pooling='avg', pop_fc=True)
                 print('Calculating Empirical Kernel:')
                 K = empirical_K(model, data_train_plus_test,
                         #1,device,
                         0.1*len(data_train_plus_test), device, # Use fc-poped model
-                        sigmaw=np.sqrt(2), sigmab=1.0, n_gpus=1,
+                        sigmaw=np.sqrt(2), sigmab=0, n_gpus=1,
                         empirical_kernel_batch_size=256,
                         truncated_init_dist=False,
                         store_partial_kernel=False,
@@ -471,19 +475,27 @@ if __name__ == '__main__':
             # there would be problem as well!
             log_10PU = logPU * np.log10(np.e)
 
+        if config.marginal_likelihood == True:
+            K_marg = K[:len(trainset_genuine),:len(trainset_genuine)]
+            (xs, ys) = get_xs_ys_from_dataset(trainset_genuine, 256, config.num_workers)
+            ys = [[y] for y in ys]
+            logPS = GP_prob(K_marg, np.array(xs), np.array(ys))
+            log_10PS = logPS * np.log10(np.e)
+
         if config.record == True:
             generalization = test_loss_acc_list[-1][1] # last test accuracy
             record = [generalization,
-                    np.log10(sharpness_one_off),
-                    np.log10(sensitivity_one_off),
-                    np.log10(sensitivity_sigmoid_one_off),
-                    np.log10(robustness_logits),
-                    np.log10(robustness_sigmoid),
-                    np.log10(sen_test_logits),
-                    np.log10(sen_test_sigmoid),
-                    np.log10(robustness_test_logits),
-                    np.log10(robustness_test_sigmoid),
-                    log_10PU
+                    #np.log10(sharpness_one_off),
+                    #np.log10(sensitivity_one_off),
+                    #np.log10(sensitivity_sigmoid_one_off),
+                    #np.log10(robustness_logits),
+                    #np.log10(robustness_sigmoid),
+                    #np.log10(sen_test_logits),
+                    #np.log10(sen_test_sigmoid),
+                    #np.log10(robustness_test_logits),
+                    #np.log10(robustness_test_sigmoid),
+                    log_10PU,
+                    log_10PS
                     ]
             np.save(os.path.join(
                 args.path, 'record_%d.npy'%args.sample), record)
@@ -494,13 +506,18 @@ if __name__ == '__main__':
             print('Empirical Kernel Already Exist!!!:')
         else:
             data_train_plus_test = torch.utils.data.ConcatDataset((trainset_genuine, testset))
-            model = resnet.ResNet_pop_fc_50(num_classes=1)
+            print('dataset size:', len(data_train_plus_test))
+            #model = resnet.ResNet_pop_fc_50(num_classes=1)
+            model = gui_cnn.CNN(image_height=28,image_width=28,num_channels=1,
+                          num_hidden_layers=config.num_hidden_layers, pooling='avg', pop_fc=True)
+                    # without pooling, the output dimension of last layer will be to big for
+                    # empirical kernel calculation. 
             print('Calculating Empirical Kernel:')
             K = empirical_K(model, data_train_plus_test,
                     #1,device,
                     0.1*len(data_train_plus_test), device, # Use fc-poped model
-                    sigmaw=np.sqrt(2), sigmab=1.0, n_gpus=1,
-                    empirical_kernel_batch_size=256,
+                    sigmaw=np.sqrt(2), sigmab=0, n_gpus=1,
+                    empirical_kernel_batch_size=16, # for l=9 gui_CNN it has to be set as 16
                     truncated_init_dist=False,
                     store_partial_kernel=False,
                     partial_kernel_n_proc=1,

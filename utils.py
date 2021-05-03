@@ -221,11 +221,12 @@ class BinaryMNIST(Dataset):
             if data_type == 'train':
                 rand_choice = np.random.choice(len(x_train_all), train_size, replace=False)
                 # In this case the training set will do random sampling.
-                self.data = self.resize_for_cnn(x_train_all[rand_choice])
-                self.targets = y_train_all[rand_choice]
+                fixed_choice = range(train_size)
+                self.data = self.resize_for_cnn(x_train_all[fixed_choice])
+                self.targets = y_train_all[fixed_choice]
             elif data_type == 'test':
-                self.data = self.resize_for_cnn(x_test_all)
-                self.targets = y_test_all
+                self.data = self.resize_for_cnn(x_test_all[:1000])
+                self.targets = y_test_all[:1000]
             elif data_type == 'attack':
                 raise NotImplementedError
 
@@ -342,7 +343,7 @@ def load_data(train_batch_size,
 
     if dataset == 'MNIST-CNN':
         assert binary==True, "Binary MNIST was used but load_data set binary=False"
-        trainset_genuine = BinaryMNIST(data_type='train', train_size=10000, CNN=True)
+        trainset_genuine = BinaryMNIST(data_type='train', train_size=5000, CNN=True)
         testset = BinaryMNIST(data_type='test', CNN=True)
         trainset_attack = None
 
