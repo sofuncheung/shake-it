@@ -75,7 +75,7 @@ print('==> Building model..')
 # net = VGG('VGG19')
 if config.binary_dataset:
     net = gui_cnn.CNN(image_height=28,image_width=28,num_channels=1,
-            num_hidden_layers=config.num_hidden_layers, pooling='avg')
+            num_hidden_layers=config.num_hidden_layers, pooling=config.pooling)
     #net = resnet.ResNet50(num_classes=1)
     #net = keskar_models.C1(num_classes=1)
 else:
@@ -451,7 +451,7 @@ if __name__ == '__main__':
             else:
                 #model = resnet.ResNet_pop_fc_50(num_classes=1)
                 model = gui_cnn.CNN(image_height=28,image_width=28,num_channels=1,
-                        num_hidden_layers=config.num_hidden_layers, pooling='avg', pop_fc=True)
+                        num_hidden_layers=config.num_hidden_layers, pooling=config.pooling, pop_fc=True)
                 print('Calculating Empirical Kernel:')
                 K = empirical_K(model, data_train_plus_test,
                         #1,device,
@@ -510,7 +510,7 @@ if __name__ == '__main__':
             print('dataset size:', len(data_train_plus_test))
             #model = resnet.ResNet_pop_fc_50(num_classes=1)
             model = gui_cnn.CNN(image_height=28,image_width=28,num_channels=1,
-                          num_hidden_layers=config.num_hidden_layers, pooling='avg', pop_fc=True)
+                          num_hidden_layers=config.num_hidden_layers, pooling=config.pooling, pop_fc=True)
                     # without pooling, the output dimension of last layer will be to big for
                     # empirical kernel calculation. 
             print('Calculating Empirical Kernel:')
